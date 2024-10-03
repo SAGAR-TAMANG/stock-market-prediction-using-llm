@@ -12,5 +12,3 @@ print(nifty_info)
 # Safely try to access the current price using .get(), which avoids KeyError
 current_price = nifty_info.get('regularMarketPrice', 'Price not available')
 print(f"Current Price of NIFTY 50: {current_price}")
-
-print
