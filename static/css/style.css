@@ -386,3 +386,11 @@ img {
 	justify-content: center;
 	padding-top: 1.25rem;
 }
+
+.text-red {
+	color: red;
+}
+
+.text-green {
+	color: green;
+}
