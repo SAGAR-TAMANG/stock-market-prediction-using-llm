@@ -92,7 +92,7 @@
 						</div>
 						<div class="list">
 							<!-- Company 1 -->
-							<div class="list-item">
+							<div class="list-item" id="company1">
 								<div class="list-item-company">
 									<figure class="list-item-company-logo">
 										<img src="static/companies/{{ company1_logo }}" />
@@ -114,14 +114,14 @@
 										</span>
 										<time class="list-item-transaction-time" datetime="17:00">{{ today_date }}</time>
 									</div>
-									<button class="list-item-transaction-action">
+									<button class="list-item-transaction-action" hx-get="prediction/?company_name={{ company1_name }}" hx-target="#company1" hx-swap="afterend">
 										<i class="ph-caret-down-bold"></i>
 									</button>
 								</div>
 							</div>
 						
 							<!-- Company 2 -->
-							<div class="list-item">
+							<div class="list-item" id="company2">
 								<div class="list-item-company">
 									<figure class="list-item-company-logo">
 										<img src="static/companies/{{ company2_logo }}" />
@@ -143,14 +143,14 @@
 										</span>
 										<time class="list-item-transaction-time" datetime="17:00">{{ today_date }}</time>
 									</div>
-									<button class="list-item-transaction-action">
+									<button class="list-item-transaction-action" hx-get="prediction/?company_name={{ company2_name }}" hx-target="#company2" hx-swap="afterend">
 										<i class="ph-caret-down-bold"></i>
 									</button>
 								</div>
 							</div>
 						
 							<!-- Company 3 -->
-							<div class="list-item">
+							<div class="list-item" id="company3">
 								<div class="list-item-company">
 									<figure class="list-item-company-logo">
 										<img src="static/companies/{{ company3_logo }}" />
@@ -172,14 +172,14 @@
 										</span>
 										<time class="list-item-transaction-time" datetime="17:00">{{ today_date }}</time>
 									</div>
-									<button class="list-item-transaction-action">
+									<button class="list-item-transaction-action" hx-get="prediction/?company_name={{ company3_name }}" hx-target="#company3" hx-swap="afterend">
 										<i class="ph-caret-down-bold"></i>
 									</button>
 								</div>
 							</div>
 						
 							<!-- Company 4 -->
-							<div class="list-item">
+							<div class="list-item" id="company4">
 								<div class="list-item-company">
 									<figure class="list-item-company-logo">
 										<img src="static/companies/{{ company4_logo }}" />
@@ -201,14 +201,14 @@
 										</span>
 										<time class="list-item-transaction-time" datetime="17:00">{{ today_date }}</time>
 									</div>
-									<button class="list-item-transaction-action">
+									<button class="list-item-transaction-action" hx-get="prediction/?company_name={{ company4_name }}" hx-target="#company4" hx-swap="afterend">
 										<i class="ph-caret-down-bold"></i>
 									</button>
 								</div>
 							</div>
 						
 							<!-- Company 5 -->
-							<div class="list-item">
+							<div class="list-item" id="company5">
 								<div class="list-item-company">
 									<figure class="list-item-company-logo">
 										<img src="static/companies/{{ company5_logo }}" />
@@ -230,14 +230,14 @@
 										</span>
 										<time class="list-item-transaction-time" datetime="17:00">{{ today_date }}</time>
 									</div>
-									<button class="list-item-transaction-action">
+									<button class="list-item-transaction-action" hx-get="prediction/?company_name={{ company5_name }}" hx-target="#company5" hx-swap="afterend">
 										<i class="ph-caret-down-bold"></i>
 									</button>
 								</div>
 							</div>
 						
 							<!-- Company 6 -->
-							<div class="list-item">
+							<div class="list-item" id="company6">
 								<div class="list-item-company">
 									<figure class="list-item-company-logo">
 										<img src="static/companies/{{ company6_logo }}" />
@@ -259,14 +259,14 @@
 										</span>
 										<time class="list-item-transaction-time" datetime="17:00">{{ today_date }}</time>
 									</div>
-									<button class="list-item-transaction-action">
+									<button class="list-item-transaction-action" hx-get="prediction/?company_name={{ company6_name }}" hx-target="#company6" hx-swap="afterend">
 										<i class="ph-caret-down-bold"></i>
 									</button>
 								</div>
 							</div>
 						
 							<!-- Company 7 -->
-							<div class="list-item">
+							<div class="list-item" id="company7">
 								<div class="list-item-company">
 									<figure class="list-item-company-logo">
 										<img src="static/companies/{{ company7_logo }}" />
@@ -288,14 +288,14 @@
 										</span>
 										<time class="list-item-transaction-time" datetime="17:00">{{ today_date }}</time>
 									</div>
-									<button class="list-item-transaction-action">
+									<button class="list-item-transaction-action" hx-get="prediction/?company_name={{ company7_name }}" hx-target="#company7" hx-swap="afterend">
 										<i class="ph-caret-down-bold"></i>
 									</button>
 								</div>
 							</div>
 						
 							<!-- Company 8 -->
-							<div class="list-item">
+							<div class="list-item" id="company8">
 								<div class="list-item-company">
 									<figure class="list-item-company-logo">
 										<img src="static/companies/{{ company8_logo }}" />
@@ -317,14 +317,14 @@
 										</span>
 										<time class="list-item-transaction-time" datetime="17:00">{{ today_date }}</time>
 									</div>
-									<button class="list-item-transaction-action">
+									<button class="list-item-transaction-action" hx-get="prediction/?company_name={{ company8_name }}" hx-target="#company8" hx-swap="afterend">
 										<i class="ph-caret-down-bold"></i>
 									</button>
 								</div>
 							</div>
 						
 							<!-- Company 9 -->
-							<div class="list-item">
+							<div class="list-item" id="company9">
 								<div class="list-item-company">
 									<figure class="list-item-company-logo">
 										<img src="static/companies/{{ company9_logo }}" />
@@ -346,14 +346,14 @@
 										</span>
 										<time class="list-item-transaction-time" datetime="17:00">{{ today_date }}</time>
 									</div>
-									<button class="list-item-transaction-action">
+									<button class="list-item-transaction-action" hx-get="prediction/?company_name={{ company9_name }}" hx-target="#company9" hx-swap="afterend">
 										<i class="ph-caret-down-bold"></i>
 									</button>
 								</div>
 							</div>
 						
 							<!-- Company 10 -->
-							<div class="list-item">
+							<div class="list-item" id="company10">
 								<div class="list-item-company">
 									<figure class="list-item-company-logo">
 										<img src="static/companies/{{ company10_logo }}" />
@@ -375,7 +375,7 @@
 										</span>
 										<time class="list-item-transaction-time" datetime="17:00">{{ today_date }}</time>
 									</div>
-									<button class="list-item-transaction-action">
+									<button class="list-item-transaction-action" hx-get="prediction/?company_name={{ company10_name }}" hx-target="#company10" hx-swap="afterend">
 										<i class="ph-caret-down-bold"></i>
 									</button>
 								</div>
@@ -391,6 +391,6 @@
 	</main>
 </div>
 <!-- partial -->
-  
+  <script src="{% static 'js/htmx.min.js' %}"></script>
 </body>
 </html>
