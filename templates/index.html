@@ -114,10 +114,13 @@
 										</span>
 										<time class="list-item-transaction-time" datetime="17:00">{{ today_date }}</time>
 									</div>
-									<button class="list-item-transaction-action" hx-get="prediction/?company_name={{ company1_name }}" hx-target="#company1" hx-swap="afterend">
+									<button class="list-item-transaction-action" hx-get="prediction/?company_name={{ company1_name }}" hx-target="#company1" hx-swap="afterend" hx-indicator="#spinner">
 										<i class="ph-caret-down-bold"></i>
 									</button>
 								</div>
+							</div>
+							<div class="loader">
+								<img  id="spinner" class="htmx-indicator" src="{% static 'assets/loading3.gif' %}" height="50px">
 							</div>
 						
 							<!-- Company 2 -->
@@ -147,6 +150,9 @@
 										<i class="ph-caret-down-bold"></i>
 									</button>
 								</div>
+							</div>
+							<div class="loader">
+								<img  id="spinner2" class="htmx-indicator" src="{% static 'assets/loading3.gif' %}" height="50px">
 							</div>
 						
 							<!-- Company 3 -->
@@ -322,6 +328,9 @@
 									</button>
 								</div>
 							</div>
+							<div class="loader">
+								<img  id="spinner8" class="htmx-indicator" src="{% static 'assets/loading3.gif' %}" height="50px">
+							</div>
 						
 							<!-- Company 9 -->
 							<div class="list-item" id="company9">
@@ -351,6 +360,9 @@
 									</button>
 								</div>
 							</div>
+							<div class="loader">
+								<img  id="spinner9" class="htmx-indicator" src="{% static 'assets/loading3.gif' %}" height="50px">
+							</div>
 						
 							<!-- Company 10 -->
 							<div class="list-item" id="company10">
@@ -379,6 +391,9 @@
 										<i class="ph-caret-down-bold"></i>
 									</button>
 								</div>
+							</div>
+							<div class="loader">
+								<img  id="spinner10" class="htmx-indicator" src="{% static 'assets/loading3.gif' %}" height="50px">
 							</div>
 						</div>						
 					</div>
