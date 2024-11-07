@@ -1,0 +1,11 @@
+<div style="text-align: center; color: var(--c-text-secondary);">
+    <h5 class="list-item-company-name">Stock Prediction of {{ company_name }}:</h5>
+    {% if pred == "Bullish" %}
+    <p><strong><span style="color: var(--c-text-secondary);">Prediction:</span></strong> <span style="color: green;">{{ pred }}</span></p>
+    <p><strong><span style="color: var(--c-text-secondary);">Percentage:</span></strong> <span style="color: green;">{{ percent }}%</span></p>
+    {% else %}
+    <p><strong><span style="color: var(--c-text-secondary);">Prediction:</span></strong> <span style="color: red;">{{ pred }}</span></p>
+    <p><strong><span style="color: var(--c-text-secondary);">Percentage:</span></strong> <span style="color: red;">{{ percent }}%</span></p>
+    {% endif %}
+    <p><strong>Short Descriptive Reason:</strong> {{ desc }}</p>
+</div>

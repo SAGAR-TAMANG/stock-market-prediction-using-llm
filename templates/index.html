@@ -4,7 +4,7 @@
 <html lang="en" >
 <head>
   <meta charset="UTF-8">
-  <title>CodePen - Earmark web app | Dribbble design by Ryan Johnson</title>
+  <title>Stock Market Predictor</title>
   <script src="https://unpkg.com/phosphor-icons"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
@@ -68,7 +68,7 @@
 				<div class="content-header-inner">
 					<h1 class="content-header-title">Good afternoon {{ name }}, <br />you have<small>$24,920.56</small></h1>
 					<div class="content-header-info">
-						Today's NIFTY Value is: $435.00 <a href="#" class="link">Invest now</a>
+						Today's NIFTY Value is: $435.00 <a href="#" class="link">Predict Now</a>
 					</div>
 				</div>
 				<div class="content-header-illustration">
@@ -78,252 +78,327 @@
 			<div class="content-body">
 				<section class="overview">
 					<header class="overview-header">
-						<h2 class="overview-header-title">Transactions to review<span>7</span></h2>
+						<h2 class="overview-header-title">Trending Stocks<span>10</span></h2>
 						<a href="#" class="link">View all</a>
 					</header>
 					<div class="overview-body">
 						<div class="summary">
-							<h3 class="summary-date">Sept 09, 2020</h3>
-							<span class="summary-amount">+$87.01</span>
+							<h3 class="summary-date">{{ today_datetime }}</h3>
+							{% if today_market > 0 %}
+							<span class="summary-amount text-green">{{ today_market }}</span>
+							{% else %}
+							<span class="summary-amount text-red">{{ today_market }}</span>
+							{% endif %}
 						</div>
 						<div class="list">
-							<div class="list-item">
+							<!-- Company 1 -->
+							<div class="list-item" id="company1">
 								<div class="list-item-company">
 									<figure class="list-item-company-logo">
-										<img src="https://assets.codepen.io/285131/spotify-logo.svg" />
+										<img src="static/companies/{{ company1_logo }}" />
 									</figure>
 									<div class="list-item-company-info">
-										<h4 class="list-item-company-name">Spotify</h4>
-										<a href="#" class="list-item-company-hashtag">#Music</a>
+										<h4 class="list-item-company-name">{{ company1_name }}</h4>
+										<a href="#" class="list-item-company-hashtag">{{ company1_desc }}</a>
 									</div>
 								</div>
 								<div class="list-item-transaction">
 									<div class="list-item-transaction-values">
-										<span class="list-item-transaction-value">
-											<i class="ph-arrows-clockwise-bold"></i>-$9.99
+										{% if company1_market > 0 %}
+										<span class="list-item-transaction-value text-green">
+											<i class="ph-arrow-up"></i>{{ company1_market }}
+										{% else %}
+										<span class="list-item-transaction-value text-red">
+											<i class="ph-arrow-down"></i>{{ company1_market }}
+										{% endif %}
 										</span>
-										<time class="list-item-transaction-time" datetime="17:00">5:00pm</time>
+										<time class="list-item-transaction-time" datetime="17:00">{{ today_date }}</time>
 									</div>
-									<button class="list-item-transaction-action">
+									<button class="list-item-transaction-action" hx-get="prediction/?company_name={{ company1_name }}" hx-target="#company1" hx-swap="afterend" hx-indicator="#spinner">
 										<i class="ph-caret-down-bold"></i>
 									</button>
 								</div>
 							</div>
-							<div class="list-item">
+							<div class="loader">
+								<img  id="spinner" class="htmx-indicator" src="{% static 'assets/loading3.gif' %}" height="50px">
+							</div>
+						
+							<!-- Company 2 -->
+							<div class="list-item" id="company2">
 								<div class="list-item-company">
 									<figure class="list-item-company-logo">
-										<img src="https://assets.codepen.io/285131/megan.jpg" />
+										<img src="static/companies/{{ company2_logo }}" />
 									</figure>
 									<div class="list-item-company-info">
-										<h4 class="list-item-company-name">E-Transfer from Megan Primeau</h4>
-										<a href="#" class="list-item-company-hashtag">#Income</a>
+										<h4 class="list-item-company-name">{{ company2_name }}</h4>
+										<a href="#" class="list-item-company-hashtag">{{ company2_desc }}</a>
 									</div>
 								</div>
 								<div class="list-item-transaction">
 									<div class="list-item-transaction-values">
-										<span class="list-item-transaction-value list-item-transaction-value--positive"> +$120.00
+										{% if company2_market > 0 %}
+										<span class="list-item-transaction-value text-green">
+											<i class="ph-arrow-up"></i>{{ company2_market }}
+										{% else %}
+										<span class="list-item-transaction-value text-red">
+											<i class="ph-arrow-down"></i>{{ company2_market }}
+										{% endif %}
 										</span>
-										<time class="list-item-transaction-time" datetime="11:30">11:30am</time>
+										<time class="list-item-transaction-time" datetime="17:00">{{ today_date }}</time>
 									</div>
-									<button class="list-item-transaction-action">
+									<button class="list-item-transaction-action" hx-get="prediction/?company_name={{ company2_name }}" hx-target="#company2" hx-swap="afterend">
 										<i class="ph-caret-down-bold"></i>
 									</button>
 								</div>
 							</div>
-							<div class="list-item">
+							<div class="loader">
+								<img  id="spinner2" class="htmx-indicator" src="{% static 'assets/loading3.gif' %}" height="50px">
+							</div>
+						
+							<!-- Company 3 -->
+							<div class="list-item" id="company3">
 								<div class="list-item-company">
 									<figure class="list-item-company-logo">
-										<img src="https://assets.codepen.io/285131/starbucks-logo.svg" />
+										<img src="static/companies/{{ company3_logo }}" />
 									</figure>
 									<div class="list-item-company-info">
-										<h4 class="list-item-company-name">Starbucks</h4>
-										<a href="#" class="list-item-company-hashtag">#Food</a>
-										<a href="#" class="list-item-company-hashtag">#Coffee</a>
+										<h4 class="list-item-company-name">{{ company3_name }}</h4>
+										<a href="#" class="list-item-company-hashtag">{{ company3_desc }}</a>
 									</div>
 								</div>
 								<div class="list-item-transaction">
 									<div class="list-item-transaction-values">
-										<span class="list-item-transaction-value"> -$6.50
+										{% if company3_market > 0 %}
+										<span class="list-item-transaction-value text-green">
+											<i class="ph-arrow-up"></i>{{ company3_market }}
+										{% else %}
+										<span class="list-item-transaction-value text-red">
+											<i class="ph-arrow-down"></i>{{ company3_market }}
+										{% endif %}
 										</span>
-										<time class="list-item-transaction-time" datetime="11:23">11:23am</time>
+										<time class="list-item-transaction-time" datetime="17:00">{{ today_date }}</time>
 									</div>
-									<button class="list-item-transaction-action">
+									<button class="list-item-transaction-action" hx-get="prediction/?company_name={{ company3_name }}" hx-target="#company3" hx-swap="afterend">
 										<i class="ph-caret-down-bold"></i>
 									</button>
 								</div>
 							</div>
-														<div class="list-item">
+						
+							<!-- Company 4 -->
+							<div class="list-item" id="company4">
 								<div class="list-item-company">
 									<figure class="list-item-company-logo">
-										<img src="https://assets.codepen.io/285131/shell-logo.png" />
+										<img src="static/companies/{{ company4_logo }}" />
 									</figure>
 									<div class="list-item-company-info">
-										<h4 class="list-item-company-name">Shell</h4>
-										<a href="#" class="list-item-company-hashtag">#Gas</a>
+										<h4 class="list-item-company-name">{{ company4_name }}</h4>
+										<a href="#" class="list-item-company-hashtag">{{ company4_desc }}</a>
 									</div>
 								</div>
 								<div class="list-item-transaction">
 									<div class="list-item-transaction-values">
-										<span class="list-item-transaction-value"> -$16.50
+										{% if company4_market > 0 %}
+										<span class="list-item-transaction-value text-green">
+											<i class="ph-arrow-up"></i>{{ company4_market }}
+										{% else %}
+										<span class="list-item-transaction-value text-red">
+											<i class="ph-arrow-down"></i>{{ company4_market }}
+										{% endif %}
 										</span>
-										<time class="list-item-transaction-time" datetime="10:00">10:00am</time>
+										<time class="list-item-transaction-time" datetime="17:00">{{ today_date }}</time>
 									</div>
-									<button class="list-item-transaction-action">
+									<button class="list-item-transaction-action" hx-get="prediction/?company_name={{ company4_name }}" hx-target="#company4" hx-swap="afterend">
 										<i class="ph-caret-down-bold"></i>
 									</button>
 								</div>
 							</div>
-						</div>
-						<div class="summary">
-							<h3 class="summary-date">Sept 08, 2020</h3>
-							<span class="summary-amount">+$102.76</span>
-						</div>
-						<div class="list">
-							<div class="list-item">
+						
+							<!-- Company 5 -->
+							<div class="list-item" id="company5">
 								<div class="list-item-company">
 									<figure class="list-item-company-logo">
-										<img src="https://assets.codepen.io/285131/mike.jpg" />
+										<img src="static/companies/{{ company5_logo }}" />
 									</figure>
 									<div class="list-item-company-info">
-										<h4 class="list-item-company-name">E-Transfer from Mike Gravelle</h4>
-										<a href="#" class="list-item-company-hashtag">#Income</a>
+										<h4 class="list-item-company-name">{{ company5_name }}</h4>
+										<a href="#" class="list-item-company-hashtag">{{ company5_desc }}</a>
 									</div>
 								</div>
 								<div class="list-item-transaction">
 									<div class="list-item-transaction-values">
-										<span class="list-item-transaction-value list-item-transaction-value--positive">
-											 +$67.00
+										{% if company5_market > 0 %}
+										<span class="list-item-transaction-value text-green">
+											<i class="ph-arrow-up"></i>{{ company5_market }}
+										{% else %}
+										<span class="list-item-transaction-value text-red">
+											<i class="ph-arrow-down"></i>{{ company5_market }}
+										{% endif %}
 										</span>
-										<time class="list-item-transaction-time" datetime="17:00">5:00pm</time>
+										<time class="list-item-transaction-time" datetime="17:00">{{ today_date }}</time>
 									</div>
-									<button class="list-item-transaction-action">
+									<button class="list-item-transaction-action" hx-get="prediction/?company_name={{ company5_name }}" hx-target="#company5" hx-swap="afterend">
 										<i class="ph-caret-down-bold"></i>
 									</button>
 								</div>
 							</div>
-							<div class="list-item">
+						
+							<!-- Company 6 -->
+							<div class="list-item" id="company6">
 								<div class="list-item-company">
 									<figure class="list-item-company-logo">
-										<img src="https://assets.codepen.io/285131/whole-foods-logo.png" />
+										<img src="static/companies/{{ company6_logo }}" />
 									</figure>
 									<div class="list-item-company-info">
-										<h4 class="list-item-company-name">Whole Foods</h4>
-										<a href="#" class="list-item-company-hashtag">#Groceries</a>
+										<h4 class="list-item-company-name">{{ company6_name }}</h4>
+										<a href="#" class="list-item-company-hashtag">{{ company6_desc }}</a>
 									</div>
 								</div>
 								<div class="list-item-transaction">
 									<div class="list-item-transaction-values">
-										<span class="list-item-transaction-value"> -$150.56
+										{% if company6_market > 0 %}
+										<span class="list-item-transaction-value text-green">
+											<i class="ph-arrow-up"></i>{{ company6_market }}
+										{% else %}
+										<span class="list-item-transaction-value text-red">
+											<i class="ph-arrow-down"></i>{{ company6_market }}
+										{% endif %}
 										</span>
-										<time class="list-item-transaction-time" datetime="16:40">4:40pm</time>
+										<time class="list-item-transaction-time" datetime="17:00">{{ today_date }}</time>
 									</div>
-									<button class="list-item-transaction-action">
+									<button class="list-item-transaction-action" hx-get="prediction/?company_name={{ company6_name }}" hx-target="#company6" hx-swap="afterend">
 										<i class="ph-caret-down-bold"></i>
 									</button>
 								</div>
 							</div>
-							<div class="list-item">
+						
+							<!-- Company 7 -->
+							<div class="list-item" id="company7">
 								<div class="list-item-company">
 									<figure class="list-item-company-logo">
-										<img src="https://assets.codepen.io/285131/amc-logo.png" />
+										<img src="static/companies/{{ company7_logo }}" />
 									</figure>
 									<div class="list-item-company-info">
-										<h4 class="list-item-company-name">AMC Theathers</h4>
-										<a href="#" class="list-item-company-hashtag">#Entertainment</a>
+										<h4 class="list-item-company-name">{{ company7_name }}</h4>
+										<a href="#" class="list-item-company-hashtag">{{ company7_desc }}</a>
 									</div>
 								</div>
 								<div class="list-item-transaction">
 									<div class="list-item-transaction-values">
-										<span class="list-item-transaction-value"> -$19.20
+										{% if company7_market > 0 %}
+										<span class="list-item-transaction-value text-green">
+											<i class="ph-arrow-up"></i>{{ company7_market }}
+										{% else %}
+										<span class="list-item-transaction-value text-red">
+											<i class="ph-arrow-down"></i>{{ company7_market }}
+										{% endif %}
 										</span>
-										<time class="list-item-transaction-time" datetime="13:23">1:23am</time>
+										<time class="list-item-transaction-time" datetime="17:00">{{ today_date }}</time>
 									</div>
-									<button class="list-item-transaction-action">
+									<button class="list-item-transaction-action" hx-get="prediction/?company_name={{ company7_name }}" hx-target="#company7" hx-swap="afterend">
 										<i class="ph-caret-down-bold"></i>
 									</button>
 								</div>
 							</div>
-						</div>
+						
+							<!-- Company 8 -->
+							<div class="list-item" id="company8">
+								<div class="list-item-company">
+									<figure class="list-item-company-logo">
+										<img src="static/companies/{{ company8_logo }}" />
+									</figure>
+									<div class="list-item-company-info">
+										<h4 class="list-item-company-name">{{ company8_name }}</h4>
+										<a href="#" class="list-item-company-hashtag">{{ company8_desc }}</a>
+									</div>
+								</div>
+								<div class="list-item-transaction">
+									<div class="list-item-transaction-values">
+										{% if company8_market > 0 %}
+										<span class="list-item-transaction-value text-green">
+											<i class="ph-arrow-up"></i>{{ company8_market }}
+										{% else %}
+										<span class="list-item-transaction-value text-red">
+											<i class="ph-arrow-down"></i>{{ company8_market }}
+										{% endif %}
+										</span>
+										<time class="list-item-transaction-time" datetime="17:00">{{ today_date }}</time>
+									</div>
+									<button class="list-item-transaction-action" hx-get="prediction/?company_name={{ company8_name }}" hx-target="#company8" hx-swap="afterend">
+										<i class="ph-caret-down-bold"></i>
+									</button>
+								</div>
+							</div>
+							<div class="loader">
+								<img  id="spinner8" class="htmx-indicator" src="{% static 'assets/loading3.gif' %}" height="50px">
+							</div>
+						
+							<!-- Company 9 -->
+							<div class="list-item" id="company9">
+								<div class="list-item-company">
+									<figure class="list-item-company-logo">
+										<img src="static/companies/{{ company9_logo }}" />
+									</figure>
+									<div class="list-item-company-info">
+										<h4 class="list-item-company-name">{{ company9_name }}</h4>
+										<a href="#" class="list-item-company-hashtag">{{ company9_desc }}</a>
+									</div>
+								</div>
+								<div class="list-item-transaction">
+									<div class="list-item-transaction-values">
+										{% if company9_market > 0 %}
+										<span class="list-item-transaction-value text-green">
+											<i class="ph-arrow-up"></i>{{ company9_market }}
+										{% else %}
+										<span class="list-item-transaction-value text-red">
+											<i class="ph-arrow-down"></i>{{ company9_market }}
+										{% endif %}
+										</span>
+										<time class="list-item-transaction-time" datetime="17:00">{{ today_date }}</time>
+									</div>
+									<button class="list-item-transaction-action" hx-get="prediction/?company_name={{ company9_name }}" hx-target="#company9" hx-swap="afterend">
+										<i class="ph-caret-down-bold"></i>
+									</button>
+								</div>
+							</div>
+							<div class="loader">
+								<img  id="spinner9" class="htmx-indicator" src="{% static 'assets/loading3.gif' %}" height="50px">
+							</div>
+						
+							<!-- Company 10 -->
+							<div class="list-item" id="company10">
+								<div class="list-item-company">
+									<figure class="list-item-company-logo">
+										<img src="static/companies/{{ company10_logo }}" />
+									</figure>
+									<div class="list-item-company-info">
+										<h4 class="list-item-company-name">{{ company10_name }}</h4>
+										<a href="#" class="list-item-company-hashtag">{{ company10_desc }}</a>
+									</div>
+								</div>
+								<div class="list-item-transaction">
+									<div class="list-item-transaction-values">
+										{% if company10_market > 0 %}
+										<span class="list-item-transaction-value text-green">
+											<i class="ph-arrow-up"></i>{{ company10_market }}
+										{% else %}
+										<span class="list-item-transaction-value text-red">
+											<i class="ph-arrow-down"></i>{{ company10_market }}
+										{% endif %}
+										</span>
+										<time class="list-item-transaction-time" datetime="17:00">{{ today_date }}</time>
+									</div>
+									<button class="list-item-transaction-action" hx-get="prediction/?company_name={{ company10_name }}" hx-target="#company10" hx-swap="afterend">
+										<i class="ph-caret-down-bold"></i>
+									</button>
+								</div>
+							</div>
+							<div class="loader">
+								<img  id="spinner10" class="htmx-indicator" src="{% static 'assets/loading3.gif' %}" height="50px">
+							</div>
+						</div>						
 					</div>
 					<footer class="overview-footer">
 						<a href="#" class="link">View all transactions<i class="ph-arrow-right-bold"></i></a>
-					</footer>
-				</section>
-				<section class="overview">
-					<header class="overview-header">
-						<h2 class="overview-header-title">Upcoming payments<span>3</span></h2>
-						<a href="#" class="link">View all</a>
-					</header>
-					<div class="overview-body">
-						<div class="list">
-							<div class="list-item">
-								<div class="list-item-company">
-									<figure class="list-item-company-logo list-item-company-logo--square">
-										<img src="https://assets.codepen.io/285131/netflix-logo.png" />
-									</figure>
-									<div class="list-item-company-info">
-										<h4 class="list-item-company-name">Netflix</h4>
-										<a href="#" class="list-item-company-hashtag">#Entertainment</a>
-									</div>
-								</div>
-								<div class="list-item-transaction">
-									<div class="list-item-transaction-values">
-										<span class="list-item-transaction-value">
-											<i class="ph-arrows-clockwise-bold"></i>-$7.99
-										</span>
-										<time class="list-item-transaction-time" datetime="2020-09-23T16:00:00">September 23, 2020 at 4:00pm</time>
-									</div>
-									<button class="list-item-transaction-action">
-										<i class="ph-caret-down-bold"></i>
-									</button>
-								</div>
-							</div>
-							<div class="list-item">
-								<div class="list-item-company">
-									<figure class="list-item-company-logo list-item-company-logo--square">
-										<img src="https://assets.codepen.io/285131/apple-music.png" />
-									</figure>
-									<div class="list-item-company-info">
-										<h4 class="list-item-company-name">Apple Music</h4>
-										<a href="#" class="list-item-company-hashtag">#Music</a>
-									</div>
-								</div>
-								<div class="list-item-transaction">
-									<div class="list-item-transaction-values">
-										<span class="list-item-transaction-value"><i class="ph-arrows-clockwise-bold"></i> -$9.99
-										</span>
-										<time class="list-item-transaction-time" datetime="2020-09-26T17:00:00">September 26, 2020 at 5:00pm</time>
-									</div>
-									<button class="list-item-transaction-action">
-										<i class="ph-caret-down-bold"></i>
-									</button>
-								</div>
-							</div>
-							<div class="list-item">
-								<div class="list-item-company">
-									<figure class="list-item-company-logo list-item-company-logo--square">
-										<img src="https://assets.codepen.io/285131/aws-logo.png" />
-									</figure>
-									<div class="list-item-company-info">
-										<h4 class="list-item-company-name">Amazon AWS</h4>
-										<a href="#" class="list-item-company-hashtag">#Hosting</a>
-									</div>
-								</div>
-								<div class="list-item-transaction">
-									<div class="list-item-transaction-values">
-										<span class="list-item-transaction-value"><i class="ph-arrows-clockwise-bold"></i> -$180.50
-										</span>
-										<time class="list-item-transaction-time" datetime="2020-09-27T21:00:00">September 27, 2020 at 9:00pm</time>
-									</div>
-									<button class="list-item-transaction-action">
-										<i class="ph-caret-down-bold"></i>
-									</button>
-								</div>
-							</div>
-						</div>
-					</div>
-					<footer class="overview-footer">
-						<a href="#" class="link">View all upcoming payments<i class="ph-arrow-right-bold"></i></a>
 					</footer>
 				</section>
 			</div>
@@ -331,6 +406,6 @@
 	</main>
 </div>
 <!-- partial -->
-  
+  <script src="{% static 'js/htmx.min.js' %}"></script>
 </body>
 </html>
