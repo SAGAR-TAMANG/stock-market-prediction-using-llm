@@ -1,20 +1,11 @@
+{% extends 'base.html' %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en" >
-<head>
-  <meta charset="UTF-8">
-  <title>Stock Market Predictor</title>
-  <script src="https://unpkg.com/phosphor-icons"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
-<link rel="stylesheet" href="{% static 'css/style.css' %}">
-
-</head>
-<body>
+{% block content %}
 <!-- partial:index.partial.html -->
 <div class="earmark-app">
 	<header class="header">
-		<h1 class="header-logo">earmark.</h1>
+		<h1 class="header-logo text-white">Stock Market Predictor</h1>
 		<div class="header-content">
 			<div class="header-search">
 				<input type="text" class="search-field" placeholder="Search..." />
@@ -66,9 +57,9 @@
 		<div class="content">
 			<div class="content-header">
 				<div class="content-header-inner">
-					<h1 class="content-header-title">Good afternoon {{ name }}, <br />you have<small>$24,920.56</small></h1>
+					<h1 class="content-header-title text-white">Good afternoon {{ name }}, <br />current NSE is<small>₹{{ nse }}</small></h1>
 					<div class="content-header-info">
-						Today's NIFTY Value is: $435.00 <a href="#" class="link">Predict Now</a>
+						Today's NIFTY Value is: ₹{{ nifty }} <a href="#" class="link">Predict Now</a>
 					</div>
 				</div>
 				<div class="content-header-illustration">
@@ -78,12 +69,12 @@
 			<div class="content-body">
 				<section class="overview">
 					<header class="overview-header">
-						<h2 class="overview-header-title">Trending Stocks<span>10</span></h2>
+						<h2 class="overview-header-title text-white">Trending Stocks<span>10</span></h2>
 						<a href="#" class="link">View all</a>
 					</header>
 					<div class="overview-body">
 						<div class="summary">
-							<h3 class="summary-date">{{ today_datetime }}</h3>
+							<h3 class="summary-date text-white">{{ today_datetime }}</h3>
 							{% if today_market > 0 %}
 							<span class="summary-amount text-green">{{ today_market }}</span>
 							{% else %}
@@ -98,7 +89,7 @@
 										<img src="static/companies/{{ company1_logo }}" />
 									</figure>
 									<div class="list-item-company-info">
-										<h4 class="list-item-company-name">{{ company1_name }}</h4>
+										<h4 class="list-item-company-name text-white">{{ company1_name }}</h4>
 										<a href="#" class="list-item-company-hashtag">{{ company1_desc }}</a>
 									</div>
 								</div>
@@ -130,7 +121,7 @@
 										<img src="static/companies/{{ company2_logo }}" />
 									</figure>
 									<div class="list-item-company-info">
-										<h4 class="list-item-company-name">{{ company2_name }}</h4>
+										<h4 class="list-item-company-name text-white">{{ company2_name }}</h4>
 										<a href="#" class="list-item-company-hashtag">{{ company2_desc }}</a>
 									</div>
 								</div>
@@ -162,7 +153,7 @@
 										<img src="static/companies/{{ company3_logo }}" />
 									</figure>
 									<div class="list-item-company-info">
-										<h4 class="list-item-company-name">{{ company3_name }}</h4>
+										<h4 class="list-item-company-name text-white">{{ company3_name }}</h4>
 										<a href="#" class="list-item-company-hashtag">{{ company3_desc }}</a>
 									</div>
 								</div>
@@ -191,7 +182,7 @@
 										<img src="static/companies/{{ company4_logo }}" />
 									</figure>
 									<div class="list-item-company-info">
-										<h4 class="list-item-company-name">{{ company4_name }}</h4>
+										<h4 class="list-item-company-name text-white">{{ company4_name }}</h4>
 										<a href="#" class="list-item-company-hashtag">{{ company4_desc }}</a>
 									</div>
 								</div>
@@ -220,7 +211,7 @@
 										<img src="static/companies/{{ company5_logo }}" />
 									</figure>
 									<div class="list-item-company-info">
-										<h4 class="list-item-company-name">{{ company5_name }}</h4>
+										<h4 class="list-item-company-name text-white">{{ company5_name }}</h4>
 										<a href="#" class="list-item-company-hashtag">{{ company5_desc }}</a>
 									</div>
 								</div>
@@ -249,7 +240,7 @@
 										<img src="static/companies/{{ company6_logo }}" />
 									</figure>
 									<div class="list-item-company-info">
-										<h4 class="list-item-company-name">{{ company6_name }}</h4>
+										<h4 class="list-item-company-name text-white">{{ company6_name }}</h4>
 										<a href="#" class="list-item-company-hashtag">{{ company6_desc }}</a>
 									</div>
 								</div>
@@ -278,7 +269,7 @@
 										<img src="static/companies/{{ company7_logo }}" />
 									</figure>
 									<div class="list-item-company-info">
-										<h4 class="list-item-company-name">{{ company7_name }}</h4>
+										<h4 class="list-item-company-name text-white">{{ company7_name }}</h4>
 										<a href="#" class="list-item-company-hashtag">{{ company7_desc }}</a>
 									</div>
 								</div>
@@ -307,7 +298,7 @@
 										<img src="static/companies/{{ company8_logo }}" />
 									</figure>
 									<div class="list-item-company-info">
-										<h4 class="list-item-company-name">{{ company8_name }}</h4>
+										<h4 class="list-item-company-name text-white">{{ company8_name }}</h4>
 										<a href="#" class="list-item-company-hashtag">{{ company8_desc }}</a>
 									</div>
 								</div>
@@ -339,7 +330,7 @@
 										<img src="static/companies/{{ company9_logo }}" />
 									</figure>
 									<div class="list-item-company-info">
-										<h4 class="list-item-company-name">{{ company9_name }}</h4>
+										<h4 class="list-item-company-name text-white">{{ company9_name }}</h4>
 										<a href="#" class="list-item-company-hashtag">{{ company9_desc }}</a>
 									</div>
 								</div>
@@ -371,7 +362,7 @@
 										<img src="static/companies/{{ company10_logo }}" />
 									</figure>
 									<div class="list-item-company-info">
-										<h4 class="list-item-company-name">{{ company10_name }}</h4>
+										<h4 class="list-item-company-name text-white">{{ company10_name }}</h4>
 										<a href="#" class="list-item-company-hashtag">{{ company10_desc }}</a>
 									</div>
 								</div>
@@ -405,7 +396,4 @@
 		</div>
 	</main>
 </div>
-<!-- partial -->
-  <script src="{% static 'js/htmx.min.js' %}"></script>
-</body>
-</html>
+{% endblock %}

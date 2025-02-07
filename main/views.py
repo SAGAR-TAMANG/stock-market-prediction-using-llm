@@ -1,16 +1,23 @@
 from django.shortcuts import render
-import random, os, re
 from datetime import datetime
 from dotenv import load_dotenv
+from nse import NSE
+import random, os, re, json
 load_dotenv()
+# Working directory
+DIR = "C:/Users/TAMANG/Documents/GitHub/stock-market-prediction-using-llm/stock-api"
+nse = NSE(download_folder=DIR)
 
 # Create your views here.
 def index(request):
-    
+    nifty_50 = nse.listEquityStocksByIndex("NIFTY 50")['marketStatus']['last']
+
     context = {
         'name': 'Upasana',
         'name_full': 'Upasana Das',
         'image': 'upasana.jpg',
+        'nse': 100,
+        'nifty': nifty_50,
         'today_market': round(random.uniform(-50.0, 50.0), 2),
         'today_datetime': datetime.now(),
         'today_date': datetime.now().date(),
@@ -93,9 +100,30 @@ def prediction(request):
 
     return render(request, 'prediction.html', context)
 
+def stock_chart_view(request):
+    # Example data: key is the date, value is the stock price.
+    stock_data = {
+        "2023-01-02": 150,
+        "2023-01-03": 153,
+        "2023-01-04": 149,
+        "2023-01-05": 155,
+        "2023-01-06": 158,
+        "2023-01-09": 160,
+        "2023-01-10": 162,
+    }
+    
+    # Serialize the dictionary into a JSON string.
+    chart_data = json.dumps(stock_data)
+    
+    # Pass the serialized data to the template context.
+    context = {
+        "chart_data": chart_data
+    }
+    return render(request, "stock_chart.html", context)
+
 import openai
 from openai import OpenAI
-client = OpenAI()
+# client = OpenAI()
 
 def chatGPT(company_name):
     completion = client.chat.completions.create(
@@ -164,7 +192,6 @@ def chatTWO(company_name):
 
     print("\n################COMPLETE TEXT: \n", complete_text, "################ \n")
     return complete_text
-
 
 def finetune_gpt_data(text):
     # Define the regex patterns for extraction

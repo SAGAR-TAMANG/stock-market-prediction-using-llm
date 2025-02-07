@@ -1,11 +1,15 @@
-<div style="text-align: center; color: var(--c-text-secondary);">
-    <h5 class="list-item-company-name">Stock Prediction of {{ company_name }}:</h5>
-    {% if pred == "Bullish" %}
-    <p><strong><span style="color: var(--c-text-secondary);">Prediction:</span></strong> <span style="color: green;">{{ pred }}</span></p>
-    <p><strong><span style="color: var(--c-text-secondary);">Percentage:</span></strong> <span style="color: green;">{{ percent }}%</span></p>
-    {% else %}
-    <p><strong><span style="color: var(--c-text-secondary);">Prediction:</span></strong> <span style="color: red;">{{ pred }}</span></p>
-    <p><strong><span style="color: var(--c-text-secondary);">Percentage:</span></strong> <span style="color: red;">{{ percent }}%</span></p>
-    {% endif %}
-    <p><strong>Short Descriptive Reason:</strong> {{ desc }}</p>
-</div>
+<div class="card bg-dark text-center border-0 shadow-sm mb-4">
+    <div class="card-body">
+      <h5 class="card-title text-secondary">Stock Prediction for</h5>
+      <h4 class="card-subtitle mb-3 text-light">{{ company_name }}</h4>
+      <button class="btn btn-primary" 
+              hx-get="prediction/?company_name={{ company_name }}" 
+              hx-target="#predictionResult-{{ company_name|slugify }}" 
+              hx-swap="innerHTML">
+        <i class="ph-rocket me-2"></i> Predict
+      </button>
+    </div>
+  </div>
+  
+  <!-- Placeholder for prediction result (optional) -->
+  <div id="predictionResult-{{ company_name|slugify }}" class="text-center mt-2"></div>

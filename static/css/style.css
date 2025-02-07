@@ -6,15 +6,15 @@
 }
 
 :root {
-	--c-text-primary: #162121;
-	--c-text-secondary: #6D7680;
+	--c-text-primary: #E3E6E6;
+	--c-text-secondary: #A0A8B0;
 	--c-action-primary: #F29873; 
-	--c-action-primary-accent: #FAF5F1;
+	--c-action-primary-accent: #2f2a3a;
 	--c-action-secondary: #63C4B1;
 	--c-action-tertiary: #F9BE31;
-	--c-bg-primary: #FCFCFC;
-	--c-bg-secondary: #F7F6FC;
-	--c-bg-search: #F0F4F5;
+	--c-bg-primary: #121212;
+	--c-bg-secondary: #1A1A1A;
+	--c-bg-search: #242A2B;
 }
 
 body {
