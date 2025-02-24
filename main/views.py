@@ -1,214 +1,141 @@
+import random
 from django.shortcuts import render
-from datetime import datetime
-from dotenv import load_dotenv
+from datetime import datetime, timedelta
 from nse import NSE
-import random, os, re, json
-load_dotenv()
-# Working directory
-DIR = "C:/Users/TAMANG/Documents/GitHub/stock-market-prediction-using-llm/stock-api"
-nse = NSE(download_folder=DIR)
 
-# Create your views here.
+def get_stock_data(nse, symbol):
+    """
+    Retrieve key stock metrics for a given symbol.
+    
+    Returns a dictionary with:
+      - company: Full company name (fallback to symbol if unavailable)
+      - symbol: Stock symbol
+      - sentiment: 'Bullish' if the change is >= 0, otherwise 'Bearish'
+      - price: Last traded price formatted as a string with 2 decimals
+      - change: Absolute change formatted to 2 decimal places (string)
+      - percentChange: Percentage change formatted to 2 decimal places (string)
+    """
+    quote_data = nse.quote(symbol)
+    meta_data = nse.equityMetaInfo(symbol)
+    price_info = quote_data.get('priceInfo', {})
+
+    last_price = price_info.get('lastPrice')
+    change = price_info.get('change')
+    percent_change = price_info.get('pChange')
+
+    sentiment = 'Bullish' if change is not None and change >= 0 else 'Bearish'
+
+    return {
+        'company': meta_data.get('companyName', symbol),
+        'symbol': symbol,
+        'sentiment': sentiment,
+        'price': f"{last_price:.2f}" if last_price is not None else "N/A",
+        'change': f"{change:.2f}" if change is not None else "0.00",
+        'percentChange': f"{percent_change:.2f}" if percent_change is not None else "0.00",
+    }
+
 def index(request):
-    nifty_50 = nse.listEquityStocksByIndex("NIFTY 50")['marketStatus']['last']
-
-    context = {
-        'name': 'Upasana',
-        'name_full': 'Upasana Das',
-        'image': 'upasana.jpg',
-        'nse': 100,
-        'nifty': nifty_50,
-        'today_market': round(random.uniform(-50.0, 50.0), 2),
-        'today_datetime': datetime.now(),
-        'today_date': datetime.now().date(),
-
-        # Company details
-        'company1_name': "Airtel",
-        'company1_logo': "airtel.jpg",
-        'company1_desc': "Bharti Airtel Limited is an Indian multinational telecommunications company based in New Delhi operating in 18 countries across South Asia and Africa, as well as the Channel Islands.",
-        'company1_market': round(random.uniform(-50.0, 50.0), 2),
-
-        'company2_name': "Asian Paints",
-        'company2_logo': "asian-paints.png",
-        'company2_desc': "Asian Paints is India's largest paint company and a major player in the paint industry worldwide.",
-        'company2_market': round(random.uniform(-50.0, 50.0), 2),
-
-        'company3_name': "Axis Bank",
-        'company3_logo': "axis-bank.png",
-        'company3_desc': "Axis Bank is one of the largest private sector banks in India, providing a range of financial services.",
-        'company3_market': round(random.uniform(-50.0, 50.0), 2),
-
-        'company4_name': "HDFC",
-        'company4_logo': "hdfc.avif",
-        'company4_desc': "HDFC Bank is a leading private sector bank in India known for its strong market position and diversified portfolio.",
-        'company4_market': round(random.uniform(-50.0, 50.0), 2),
-
-        'company5_name': "Kotak",
-        'company5_logo': "kotak.avif",
-        'company5_desc': "Kotak Mahindra Bank offers a range of banking products and financial services for corporate and retail customers.",
-        'company5_market': round(random.uniform(-50.0, 50.0), 2),
-
-        'company6_name': "HUL",
-        'company6_logo': "hul.webp",
-        'company6_desc': "Hindustan Unilever Limited is India's largest fast-moving consumer goods company, with numerous household brands.",
-        'company6_market': round(random.uniform(-50.0, 50.0), 2),
-
-        'company7_name': "ICICI",
-        'company7_logo': "icici.jpg",
-        'company7_desc': "ICICI Bank is a major private sector bank in India, with a substantial presence in corporate and retail banking.",
-        'company7_market': round(random.uniform(-50.0, 50.0), 2),
-
-        'company8_name': "Infosys",
-        'company8_logo': "infosys.gif",
-        'company8_desc': "Infosys is a global leader in consulting, technology, and outsourcing solutions, headquartered in India.",
-        'company8_market': round(random.uniform(-50.0, 50.0), 2),
-
-        'company9_name': "L&T",
-        'company9_logo': "l&t.jpg",
-        'company9_desc': "Larsen & Toubro is an Indian multinational engaged in engineering, construction, and manufacturing.",
-        'company9_market': round(random.uniform(-50.0, 50.0), 2),
-
-        'company10_name': "Reliance",
-        'company10_logo': "reliance.jpg",
-        'company10_desc': "Reliance Industries is a diversified conglomerate with businesses in energy, petrochemicals, textiles, and telecommunications.",
-        'company10_market': round(random.uniform(-50.0, 50.0), 2),
-    }
-  
-    return render(request, 'index.html', context=context)
-
-def prediction(request):
-    company_name = request.GET.get('company_name', None)
-    context = {'company_name': company_name or "Default Company"}
-
-    if company_name:
-        ai_pred = chatTWO(company_name)
-        # stock_info = finetune_gpt_data(ai_pred)
-        prediction, percentage, description = finetune_gpt_data(ai_pred)
-        context = {
-            'company_name' : company_name,
-            'pred' : prediction,
-            'percent': percentage,
-            'desc': description,
-        }
-    else:
-        ai_pred = "NIL"
-        context = {
-            'pred' : "NIL",
-            'percent': "NIL",
-            'desc': "NIL",
-        }
-
-    return render(request, 'prediction.html', context)
-
-def stock_chart_view(request):
-    # Example data: key is the date, value is the stock price.
-    stock_data = {
-        "2023-01-02": 150,
-        "2023-01-03": 153,
-        "2023-01-04": 149,
-        "2023-01-05": 155,
-        "2023-01-06": 158,
-        "2023-01-09": 160,
-        "2023-01-10": 162,
-    }
+    DIR = "C:/Users/TAMANG/Documents/GitHub/stock-market-prediction-using-llm/stock-api"
+    nse = NSE(download_folder=DIR)
     
-    # Serialize the dictionary into a JSON string.
-    chart_data = json.dumps(stock_data)
-    
-    # Pass the serialized data to the template context.
-    context = {
-        "chart_data": chart_data
-    }
-    return render(request, "stock_chart.html", context)
-
-import openai
-from openai import OpenAI
-# client = OpenAI()
-
-def chatGPT(company_name):
-    completion = client.chat.completions.create(
-    model="gpt-3.5-turbo-1106",
-    messages=[
-        {"role": "system", "content": "You are a helpful assistant."},
-    #     {"role": "user", "content": 
-    #     f"""
-    #     I want you to go through the web, newspapers, and everywhere online to predict the stock market of "Airtel" company in India. Give your outputs like this: 
-
-    #     Stock: Airtel
-    #     Prediction: Bearish/Bullish
-    #     Percentage: Float Value
-    #     Short Descriptive Reason: Give a short description from your findings on why you are predictingthis.
-    # """},
-        {"role": "user", "content": 
-        f"""
-        I want you to go through the web, newspapers, and everywhere online to predict the stock market of "Airtel" company in India. Give your outputs like this: 
-
-        Stock: Airtel
-        Prediction: Bearish/Bullish
-        Percentage: Float Value
-        Short Descriptive Reason: Give a short description from your findings on why you are predictingthis.
-    """},
+    # Define a list of 50 Indian stock symbols.
+    symbols = [
+        'TCS', 'INFY', 'RELIANCE', 'HDFCBANK', 'ICICIBANK',
+        'HINDUNILVR', 'SBIN', 'BHARTIARTL', 'MARUTI', 'LT',
+        'ITC', 'WIPRO', 'AXISBANK', 'KOTAKBANK', 'BAJFINANCE',
+        'HDFCLIFE', 'POWERGRID', 'NTPC', 'ONGC', 'COALINDIA',
+        'GAIL', 'HAL', 'TATASTEEL', 'JSWSTEEL', 'CIPLA',
+        'DRREDDY', 'LUPIN', 'SUNPHARMA', 'DIVISLAB', 'BRITANNIA',
+        'DABUR', 'MARICO', 'NESTLEIND', 'ULTRACEMCO', 'GRASIM',
+        'SHREECEM', 'ADANIPORTS', 'ADANIENT', 'ADANIGREEN', 'TITAN',
+        'ASIANPAINT', 'BERGEPAINT', 'SBILIFE', 'ICICIPRULI', 'SBICARD',
+        'EICHERMOT', 'M&M', 'HEROMOTOCO', 'BAJAJ-AUTO', 'ZEEL'
     ]
-    )
 
-    print(completion.choices[0].message)
+    # Randomly select 10 symbols from the 50.
+    selected_symbols = random.sample(symbols, 10)
 
-def chatTWO(company_name):
-    # Define the API base URL
-    url = 'https://api.two.ai/v2'
+    stocks = []
+    companies = []
 
-    # Create the OpenAI client
-    client = OpenAI(base_url=url,
-                    api_key=os.environ.get("SUTRA_API_KEY"))
+    for symbol in selected_symbols[:5]:
+        try:
+            data = get_stock_data(nse, symbol)
+            stocks.append({
+                'company': data['company'],
+                'symbol': data['symbol'],
+                'sentiment': data['sentiment'],
+                'price': data['price'],
+            })
+            companies.append({
+                'symbol': data['symbol'],
+                'change': data['change'],
+                'price': data['price'],
+            })
+        except Exception as e:
+            print(f"Error fetching data for {symbol}: {e}")
+    
+    for symbol in selected_symbols[5:10]:
+        try:
+            data = get_stock_data(nse, symbol)
+            stocks.append({
+                'company': data['company'],
+                'symbol': data['symbol'],
+                'sentiment': data['sentiment'],
+                'price': data['price'],
+            })
+        except Exception as e:
+            print(f"Error fetching data for {symbol}: {e}")
 
-    # Create the chat completion request
-    stream = client.chat.completions.create(
-        model='sutra-light',
-        messages=[{"role": "user", "content": f"""
-            I want you to predict the stock market of "{company_name}" company in India. Give your outputs like this: 
+    context = {
+        'stocks': stocks,       # Detailed table data for 10 randomly selected companies.
+        'companies': companies, # Ticker data for 10 randomly selected companies.
+    }
+    
+    print(context)
+    
+    return render(request, 'index.html', context)
 
-            Stock: {company_name}
-            Prediction: Bearish/Bullish
-            Percentage: Float Value
-            Short Descriptive Reason: Give a short description from your findings on why you are predicting this.
-        """}],
-        max_tokens=250,
-        temperature=0,
-        stream=True  # Use stream=True to receive chunks of data
-    )
-
-    # Initialize an empty string to collect the content
-    complete_text = ""
-
-    # Iterate through the stream to collect output
-    for chunk in stream:
-        if len(chunk.choices) > 0:
-            content = chunk.choices[0].delta.content
-            finish_reason = chunk.choices[0].finish_reason
-            if content:
-                complete_text += content  # Concatenate the content to the complete_text variable
-                if finish_reason is not None:
-                    break  # Exit loop if finished
-
-    print("\n################COMPLETE TEXT: \n", complete_text, "################ \n")
-    return complete_text
-
-def finetune_gpt_data(text):
-    # Define the regex patterns for extraction
-    prediction_pattern = r"Prediction:\s*(\w+)"
-    percentage_pattern = r"Percentage:\s*([-\d.]+)"
-    desc_pattern = r"Short Descriptive Reason:\s*(.+)"
-
-    # Extract information using regex
-    prediction_match = re.search(prediction_pattern, text)
-    percentage_match = re.search(percentage_pattern, text)
-    desc_match = re.search(desc_pattern, text)
-
-    # Get the captured groups or None if not found
-    prediction = prediction_match.group(1) if prediction_match else None
-    percentage = percentage_match.group(1) if percentage_match else None
-    desc = desc_match.group(1) if desc_match else None
-
-    print("\n################SPLIT: \n", prediction, "\n", percentage, "\n", desc, "################ \n")
-
-    return prediction, percentage, desc
+def prediction(request, symbol=None):
+    if request.method == "POST":
+        symbol = request.POST.get("symbol")
+    # If a symbol is provided in the URL, use it; otherwise, default to Infosys (as an example)
+    if symbol:
+        company = {
+            'name': symbol,  # In a real application, you'd look up the full company name for this symbol
+            'symbol': symbol
+        }
+        # Create dynamic date categories: starting from today for the next 8 days in dd/mm format.
+        today = datetime.today()
+        categories = [(today + timedelta(days=i)).strftime("%d/%m") for i in range(8)]
+        
+        # Hardcoded prediction chart data (for demonstration)
+        chart_data = [355, 390, 300, 350, 390, 180, 355, 390]
+        
+        # Prediction insights
+        insights = {
+            'title': 'Prediction Insights',
+            'paragraph': (
+                "Our AI model has analyzed current market trends, recent news, and historical data "
+                "to forecast this prediction. The following factors were taken into account:"
+            ),
+            'bullets': [
+                "Positive earnings report expected.",
+                "Strong market sentiment observed.",
+                "Recent strategic partnership announcement.",
+                "Robust growth in the tech sector.",
+                "Global markets rally amid investor optimism.",
+                "New regulations impacting sector performance.",
+                "Analysts upgrading forecasts for tech stocks."
+            ]
+        }
+        
+        context = {
+            'company': company,
+            'chart_data': chart_data,
+            'chart_categories': categories,
+            'insights': insights,
+        }
+        return render(request, 'prediction.html', context)
+    else:
+        return render(request, 'prediction-none.html')

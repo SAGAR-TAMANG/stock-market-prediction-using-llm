@@ -1,15 +1,377 @@
-<div class="card bg-dark text-center border-0 shadow-sm mb-4">
-    <div class="card-body">
-      <h5 class="card-title text-secondary">Stock Prediction for</h5>
-      <h4 class="card-subtitle mb-3 text-light">{{ company_name }}</h4>
-      <button class="btn btn-primary" 
-              hx-get="prediction/?company_name={{ company_name }}" 
-              hx-target="#predictionResult-{{ company_name|slugify }}" 
-              hx-swap="innerHTML">
-        <i class="ph-rocket me-2"></i> Predict
-      </button>
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Modernize Free</title>
+  <link rel="shortcut icon" type="image/png" href="{% static '/images/logos/favicon.png' %}" />
+  <link rel="stylesheet" href="{% static '/css/styles.min.css' %}" />
+  <link rel="stylesheet" href="{% static '/css/style.css' %}" />
+</head>
+
+<body>
+  <!--  Body Wrapper -->
+  <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+    data-sidebar-position="fixed" data-header-position="fixed">
+    <!-- Sidebar Start -->
+    <aside class="left-sidebar">
+      <!-- Sidebar scroll-->
+      <div>
+        <div class="brand-logo d-flex align-items-center justify-content-between">
+          <a href="./index.html" class="text-nowrap logo-img">
+            <img src="{% static '/images/logos/dark-logo.svg' %}" width="180" alt="Logo" />
+          </a>
+          <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
+            <i class="ti ti-x fs-8"></i>
+          </div>
+        </div>
+        <!-- Sidebar navigation-->
+        <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
+          <ul id="sidebarnav">
+            <li class="nav-small-cap">
+              <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+              <span class="hide-menu">Main</span>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="{% url 'index' %}" aria-expanded="false">
+                <span>
+                  <i class="ti ti-layout-dashboard"></i>
+                </span>
+                <span class="hide-menu">Dashboard</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link active" href="{% url 'prediction' %}" aria-expanded="false">
+                <span>
+                  <i class="ti ti-chart-line"></i>
+                </span>
+                <span class="hide-menu">Predictions</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./market-trends.html" aria-expanded="false">
+                <span>
+                  <i class="ti ti-trending-up"></i>
+                </span>
+                <span class="hide-menu">Market Trends</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./portfolio.html" aria-expanded="false">
+                <span>
+                  <i class="ti ti-briefcase"></i>
+                </span>
+                <span class="hide-menu">Portfolio</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./watchlist.html" aria-expanded="false">
+                <span>
+                  <i class="ti ti-eye"></i>
+                </span>
+                <span class="hide-menu">Watchlist</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./news.html" aria-expanded="false">
+                <span>
+                  <i class="ti ti-news"></i>
+                </span>
+                <span class="hide-menu">News</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./analytics.html" aria-expanded="false">
+                <span>
+                  <i class="ti ti-report-money"></i>
+                </span>
+                <span class="hide-menu">Analytics</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./reports.html" aria-expanded="false">
+                <span>
+                  <i class="ti ti-files"></i>
+                </span>
+                <span class="hide-menu">Reports</span>
+              </a>
+            </li>
+            <li class="nav-small-cap">
+              <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+              <span class="hide-menu">Settings</span>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./settings.html" aria-expanded="false">
+                <span>
+                  <i class="ti ti-settings"></i>
+                </span>
+                <span class="hide-menu">App Settings</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+        <!-- End Sidebar navigation -->
+      </div>
+
+      <!-- End Sidebar scroll-->
+    </aside>
+    <!--  Sidebar End -->
+    <!--  Main wrapper -->
+    <div class="body-wrapper">
+      <!--  Header Start -->
+      <header class="app-header">
+        <nav class="navbar navbar-expand-lg navbar-light">
+          <ul class="navbar-nav">
+            <li class="nav-item d-block d-xl-none">
+              <a class="nav-link sidebartoggler nav-icon-hover" id="headerCollapse" href="javascript:void(0)">
+                <i class="ti ti-menu-2"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link nav-icon-hover" href="javascript:void(0)">
+                <i class="ti ti-bell-ringing"></i>
+                <div class="notification bg-primary rounded-circle"></div>
+              </a>
+            </li>
+          </ul>
+          <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
+            <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
+              <a href="https://adminmart.com/product/modernize-free-bootstrap-admin-dashboard/" target="_blank" class="btn btn-primary">Docs</a>
+              <li class="nav-item dropdown">
+                <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown"
+                  aria-expanded="false">
+                  <img src="{% static '/images/profile/user-1.jpg' %}" alt="" width="35" height="35" class="rounded-circle">
+                </a>
+                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
+                  <div class="message-body">
+                    <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
+                      <i class="ti ti-user fs-6"></i>
+                      <p class="mb-0 fs-3">My Profile</p>
+                    </a>
+                    <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
+                      <i class="ti ti-mail fs-6"></i>
+                      <p class="mb-0 fs-3">My Account</p>
+                    </a>
+                    <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
+                      <i class="ti ti-list-check fs-6"></i>
+                      <p class="mb-0 fs-3">My Task</p>
+                    </a>
+                    <a href="./authentication-login.html" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </header>
+      <!--  Header End -->
+      <div class="container-fluid">
+        
+        <div class="row">
+          <div class="scroll-container">
+            <div class="scrolling-row">
+              <!-- First copy -->
+              <div class="scroll-content d-flex align-items-stretch">
+                {% for company in companies %}
+                <div class="stock-card col-lg-3 mb-4 d-flex align-items-stretch">
+                  <div class="card h-100">
+                    <div class="card-body">
+                      <div class="row align-items-start">
+                        <div class="col-8">
+                          <h5 class="card-title mb-9 fw-semibold">{{ company.symbol }}</h5>
+                          <h4 class="fw-semibold mb-3">₹{{ company.price }}</h4>
+                          <div class="d-flex align-items-center pb-1">
+                            {% if company.change >= 0 %}
+                            <span class="me-2 rounded-circle bg-light-success round-20 d-flex align-items-center justify-content-center">
+                              <i class="ti ti-arrow-up-right text-success"></i>
+                            </span>
+                            <p class="text-dark me-1 fs-3 mb-0">+{{ company.change }}%</p>
+                            {% else %}
+                            <span class="me-2 rounded-circle bg-light-danger round-20 d-flex align-items-center justify-content-center">
+                              <i class="ti ti-arrow-down-right text-danger"></i>
+                            </span>
+                            <p class="text-dark me-1 fs-3 mb-0">{{ company.change }}%</p>
+                            {% endif %}
+                            <p class="fs-3 mb-0">last update</p>
+                          </div>
+                        </div>
+                        <div class="col-4">
+                          <div class="d-flex justify-content-end">
+                            <div class="text-white bg-secondary rounded-circle p-6 d-flex align-items-center justify-content-center">
+                              <i class="ti ti-currency-dollar fs-4"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- <div id="earning"></div> -->
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+              <!-- Duplicate copy for seamless loop -->
+              <div class="scroll-content d-flex align-items-stretch">
+                {% for company in companies %}
+                <div class="stock-card col-lg-3 mb-4 d-flex align-items-stretch">
+                  <div class="card h-100">
+                    <div class="card-body">
+                      <div class="row align-items-start">
+                        <div class="col-8">
+                          <h5 class="card-title mb-9 fw-semibold">{{ company.symbol }}</h5>
+                          <h4 class="fw-semibold mb-3">₹{{ company.price }}</h4>
+                          <div class="d-flex align-items-center pb-1">
+                            {% if company.change >= 0 %}
+                            <span class="me-2 rounded-circle bg-light-success round-20 d-flex align-items-center justify-content-center">
+                              <i class="ti ti-arrow-up-right text-success"></i>
+                            </span>
+                            <p class="text-dark me-1 fs-3 mb-0">+{{ company.change }}%</p>
+                            {% else %}
+                            <span class="me-2 rounded-circle bg-light-danger round-20 d-flex align-items-center justify-content-center">
+                              <i class="ti ti-arrow-down-right text-danger"></i>
+                            </span>
+                            <p class="text-dark me-1 fs-3 mb-0">{{ company.change }}%</p>
+                            {% endif %}
+                            <p class="fs-3 mb-0">last update</p>
+                          </div>
+                        </div>
+                        <div class="col-4">
+                          <div class="d-flex justify-content-end">
+                            <div class="text-white bg-secondary rounded-circle p-6 d-flex align-items-center justify-content-center">
+                              <i class="ti ti-currency-dollar fs-6"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- <div id="earning"></div> -->
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 2 -->
+        <div class="row">
+          <!-- Prediction Chart Card (left) -->
+          <div class="col-lg-8 d-flex align-items-stretch">
+            <div class="card w-100">
+              <div class="card-body">
+                <div class="d-sm-flex d-block align-items-center justify-content-between mb-9">
+                  <div class="mb-3 mb-sm-0">
+                    <!-- Dynamically display company name and symbol -->
+                    <h5 class="card-title fw-semibold">
+                      Prediction Chart: {{ company.name }} ({{ company.symbol }})
+                    </h5>
+                  </div>
+                </div>
+                <div id="chart"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Combined Insights Card (right) -->
+          <div class="col-lg-4 d-flex align-items-stretch">
+            <div class="card overflow-hidden w-100">
+              <div class="card-body p-4">
+                <h5 class="card-title mb-9 fw-semibold">
+                  <i class="ti ti-robot me-2"></i>{{ insights.title }}
+                </h5>
+                <p class="mb-3">
+                  {{ insights.paragraph }}
+                </p>
+                <ul>
+                  {% for bullet in insights.bullets %}
+                    <li>{{ bullet }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="py-6 px-6 text-center">
+          <p class="mb-0 fs-4">Developed by the Students from<a href="https://adminmart.com/" target="_blank" class="pe-1 text-primary text-decoration-underline"> the School of Computing Sciences</a> - The Assam Kaziranga University</p>
+        </div>
+      </div>
     </div>
   </div>
-  
-  <!-- Placeholder for prediction result (optional) -->
-  <div id="predictionResult-{{ company_name|slugify }}" class="text-center mt-2"></div>
+  <script src="{% static '/libs/jquery/dist/jquery.min.js' %}"></script>
+  <script src="{% static '/libs/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static '/js/sidebarmenu.js' %}"></script>
+  <script src="{% static '/js/app.min.js' %}"></script>
+  <script src="{% static '/libs/apexcharts/dist/apexcharts.min.js' %}"></script>
+  <script src="{% static '/libs/simplebar/dist/simplebar.js' %}"></script>
+  <script src="{% static '/js/dashboard.js' %}"></script>
+
+  <!-- Chart Script -->
+  <script>
+    // Use Django context variables (rendered as JSON-safe lists) for categories and data.
+    var categories = {{ chart_categories|safe }};
+    var predictionData = {{ chart_data|safe }};
+    
+    // Chart configuration using ApexCharts
+    var chartOptions = {
+      series: [{
+        name: "Predicted Price",
+        data: predictionData
+      }],
+      chart: {
+        type: "line",  // Using line chart for prediction
+        height: 345,
+        offsetX: -15,
+        toolbar: { show: true },
+        foreColor: "#adb0bb",
+        fontFamily: 'inherit',
+        sparkline: { enabled: false },
+      },
+      colors: ["#5D87FF"],
+      markers: { size: 5 },
+      dataLabels: { enabled: false },
+      legend: { show: false },
+      grid: {
+        borderColor: "rgba(0,0,0,0.1)",
+        strokeDashArray: 3,
+        xaxis: { lines: { show: false } }
+      },
+      xaxis: {
+        type: "category",
+        categories: categories,
+        labels: { style: { cssClass: "grey--text lighten-2--text fill-color" } }
+      },
+      yaxis: {
+        show: true,
+        min: 0,
+        max: 400,
+        tickAmount: 4,
+        labels: { style: { cssClass: "grey--text lighten-2--text fill-color" } }
+      },
+      stroke: {
+        show: true,
+        width: 3,
+        lineCap: "round",
+        colors: ["#5D87FF"]
+      },
+      tooltip: { theme: "light" },
+      responsive: [
+        {
+          breakpoint: 600,
+          options: {
+            chart: { height: 250 },
+            markers: { size: 3 },
+            stroke: { width: 2 }
+          }
+        }
+      ]
+    };
+
+    var chart = new ApexCharts(document.querySelector("#chart"), chartOptions);
+    chart.render();
+  </script>
+</body>
+
+</html>

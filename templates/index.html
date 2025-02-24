@@ -1,399 +1,382 @@
-{% extends 'base.html' %}
 {% load static %}
 
-{% block content %}
-<!-- partial:index.partial.html -->
-<div class="earmark-app">
-	<header class="header">
-		<h1 class="header-logo text-white">Stock Market Predictor</h1>
-		<div class="header-content">
-			<div class="header-search">
-				<input type="text" class="search-field" placeholder="Search..." />
-				<button type="submit" class="search-btn">
-					<i class="ph-magnifying-glass-bold"></i>
-				</button>
-			</div>
-			<button class="header-avatar">
-				<span class="header-avatar-img"></span>
-				<span class="header-avatar-name">{{ name_full }}</span>
-			</button>
-		</div>
-	</header>
-	<main class="main">
-		<nav class="nav">
-			<ul class="tabs">
-				<li class="tab">
-					<button class="tab-btn tab-btn--active">
-						<i class="ph-lightbulb-bold"></i>
-						<span class="tab-btn-title">Overview</span>
-					</button>
-				</li>
-				<li class="tab">
-					<button class="tab-btn">
-						<i class="ph-arrows-left-right-bold"></i>
-						<span class="tab-btn-title">Transactions</span>
-					</button>
-				</li>
-				<li class="tab">
-					<button class="tab-btn">
-						<i class="ph-credit-card-bold"></i>
-						<span class="tab-btn-title">Bugdets</span>
-					</button>
-				</li>
-				<li class="tab">
-					<button class="tab-btn">
-						<i class="ph-arrows-counter-clockwise-bold"></i>
-						<span class="tab-btn-title">Subscriptions</span>
-					</button>
-				</li>
-				<li class="tab">
-					<button class="tab-btn">
-						<i class="ph-bank-bold"></i>
-						<span class="tab-btn-title">Accounts</span>
-					</button>
-				</li>
-			</ul>
-		</nav>
-		<div class="content">
-			<div class="content-header">
-				<div class="content-header-inner">
-					<h1 class="content-header-title text-white">Good afternoon {{ name }}, <br />current NSE is<small>₹{{ nse }}</small></h1>
-					<div class="content-header-info">
-						Today's NIFTY Value is: ₹{{ nifty }} <a href="#" class="link">Predict Now</a>
-					</div>
-				</div>
-				<div class="content-header-illustration">
-					<img src="https://assets.codepen.io/285131/illustration-2.svg" />
-				</div>
-			</div>
-			<div class="content-body">
-				<section class="overview">
-					<header class="overview-header">
-						<h2 class="overview-header-title text-white">Trending Stocks<span>10</span></h2>
-						<a href="#" class="link">View all</a>
-					</header>
-					<div class="overview-body">
-						<div class="summary">
-							<h3 class="summary-date text-white">{{ today_datetime }}</h3>
-							{% if today_market > 0 %}
-							<span class="summary-amount text-green">{{ today_market }}</span>
-							{% else %}
-							<span class="summary-amount text-red">{{ today_market }}</span>
-							{% endif %}
-						</div>
-						<div class="list">
-							<!-- Company 1 -->
-							<div class="list-item" id="company1">
-								<div class="list-item-company">
-									<figure class="list-item-company-logo">
-										<img src="static/companies/{{ company1_logo }}" />
-									</figure>
-									<div class="list-item-company-info">
-										<h4 class="list-item-company-name text-white">{{ company1_name }}</h4>
-										<a href="#" class="list-item-company-hashtag">{{ company1_desc }}</a>
-									</div>
-								</div>
-								<div class="list-item-transaction">
-									<div class="list-item-transaction-values">
-										{% if company1_market > 0 %}
-										<span class="list-item-transaction-value text-green">
-											<i class="ph-arrow-up"></i>{{ company1_market }}
-										{% else %}
-										<span class="list-item-transaction-value text-red">
-											<i class="ph-arrow-down"></i>{{ company1_market }}
-										{% endif %}
-										</span>
-										<time class="list-item-transaction-time" datetime="17:00">{{ today_date }}</time>
-									</div>
-									<button class="list-item-transaction-action" hx-get="prediction/?company_name={{ company1_name }}" hx-target="#company1" hx-swap="afterend" hx-indicator="#spinner">
-										<i class="ph-caret-down-bold"></i>
-									</button>
-								</div>
-							</div>
-							<div class="loader">
-								<img  id="spinner" class="htmx-indicator" src="{% static 'assets/loading3.gif' %}" height="50px">
-							</div>
-						
-							<!-- Company 2 -->
-							<div class="list-item" id="company2">
-								<div class="list-item-company">
-									<figure class="list-item-company-logo">
-										<img src="static/companies/{{ company2_logo }}" />
-									</figure>
-									<div class="list-item-company-info">
-										<h4 class="list-item-company-name text-white">{{ company2_name }}</h4>
-										<a href="#" class="list-item-company-hashtag">{{ company2_desc }}</a>
-									</div>
-								</div>
-								<div class="list-item-transaction">
-									<div class="list-item-transaction-values">
-										{% if company2_market > 0 %}
-										<span class="list-item-transaction-value text-green">
-											<i class="ph-arrow-up"></i>{{ company2_market }}
-										{% else %}
-										<span class="list-item-transaction-value text-red">
-											<i class="ph-arrow-down"></i>{{ company2_market }}
-										{% endif %}
-										</span>
-										<time class="list-item-transaction-time" datetime="17:00">{{ today_date }}</time>
-									</div>
-									<button class="list-item-transaction-action" hx-get="prediction/?company_name={{ company2_name }}" hx-target="#company2" hx-swap="afterend">
-										<i class="ph-caret-down-bold"></i>
-									</button>
-								</div>
-							</div>
-							<div class="loader">
-								<img  id="spinner2" class="htmx-indicator" src="{% static 'assets/loading3.gif' %}" height="50px">
-							</div>
-						
-							<!-- Company 3 -->
-							<div class="list-item" id="company3">
-								<div class="list-item-company">
-									<figure class="list-item-company-logo">
-										<img src="static/companies/{{ company3_logo }}" />
-									</figure>
-									<div class="list-item-company-info">
-										<h4 class="list-item-company-name text-white">{{ company3_name }}</h4>
-										<a href="#" class="list-item-company-hashtag">{{ company3_desc }}</a>
-									</div>
-								</div>
-								<div class="list-item-transaction">
-									<div class="list-item-transaction-values">
-										{% if company3_market > 0 %}
-										<span class="list-item-transaction-value text-green">
-											<i class="ph-arrow-up"></i>{{ company3_market }}
-										{% else %}
-										<span class="list-item-transaction-value text-red">
-											<i class="ph-arrow-down"></i>{{ company3_market }}
-										{% endif %}
-										</span>
-										<time class="list-item-transaction-time" datetime="17:00">{{ today_date }}</time>
-									</div>
-									<button class="list-item-transaction-action" hx-get="prediction/?company_name={{ company3_name }}" hx-target="#company3" hx-swap="afterend">
-										<i class="ph-caret-down-bold"></i>
-									</button>
-								</div>
-							</div>
-						
-							<!-- Company 4 -->
-							<div class="list-item" id="company4">
-								<div class="list-item-company">
-									<figure class="list-item-company-logo">
-										<img src="static/companies/{{ company4_logo }}" />
-									</figure>
-									<div class="list-item-company-info">
-										<h4 class="list-item-company-name text-white">{{ company4_name }}</h4>
-										<a href="#" class="list-item-company-hashtag">{{ company4_desc }}</a>
-									</div>
-								</div>
-								<div class="list-item-transaction">
-									<div class="list-item-transaction-values">
-										{% if company4_market > 0 %}
-										<span class="list-item-transaction-value text-green">
-											<i class="ph-arrow-up"></i>{{ company4_market }}
-										{% else %}
-										<span class="list-item-transaction-value text-red">
-											<i class="ph-arrow-down"></i>{{ company4_market }}
-										{% endif %}
-										</span>
-										<time class="list-item-transaction-time" datetime="17:00">{{ today_date }}</time>
-									</div>
-									<button class="list-item-transaction-action" hx-get="prediction/?company_name={{ company4_name }}" hx-target="#company4" hx-swap="afterend">
-										<i class="ph-caret-down-bold"></i>
-									</button>
-								</div>
-							</div>
-						
-							<!-- Company 5 -->
-							<div class="list-item" id="company5">
-								<div class="list-item-company">
-									<figure class="list-item-company-logo">
-										<img src="static/companies/{{ company5_logo }}" />
-									</figure>
-									<div class="list-item-company-info">
-										<h4 class="list-item-company-name text-white">{{ company5_name }}</h4>
-										<a href="#" class="list-item-company-hashtag">{{ company5_desc }}</a>
-									</div>
-								</div>
-								<div class="list-item-transaction">
-									<div class="list-item-transaction-values">
-										{% if company5_market > 0 %}
-										<span class="list-item-transaction-value text-green">
-											<i class="ph-arrow-up"></i>{{ company5_market }}
-										{% else %}
-										<span class="list-item-transaction-value text-red">
-											<i class="ph-arrow-down"></i>{{ company5_market }}
-										{% endif %}
-										</span>
-										<time class="list-item-transaction-time" datetime="17:00">{{ today_date }}</time>
-									</div>
-									<button class="list-item-transaction-action" hx-get="prediction/?company_name={{ company5_name }}" hx-target="#company5" hx-swap="afterend">
-										<i class="ph-caret-down-bold"></i>
-									</button>
-								</div>
-							</div>
-						
-							<!-- Company 6 -->
-							<div class="list-item" id="company6">
-								<div class="list-item-company">
-									<figure class="list-item-company-logo">
-										<img src="static/companies/{{ company6_logo }}" />
-									</figure>
-									<div class="list-item-company-info">
-										<h4 class="list-item-company-name text-white">{{ company6_name }}</h4>
-										<a href="#" class="list-item-company-hashtag">{{ company6_desc }}</a>
-									</div>
-								</div>
-								<div class="list-item-transaction">
-									<div class="list-item-transaction-values">
-										{% if company6_market > 0 %}
-										<span class="list-item-transaction-value text-green">
-											<i class="ph-arrow-up"></i>{{ company6_market }}
-										{% else %}
-										<span class="list-item-transaction-value text-red">
-											<i class="ph-arrow-down"></i>{{ company6_market }}
-										{% endif %}
-										</span>
-										<time class="list-item-transaction-time" datetime="17:00">{{ today_date }}</time>
-									</div>
-									<button class="list-item-transaction-action" hx-get="prediction/?company_name={{ company6_name }}" hx-target="#company6" hx-swap="afterend">
-										<i class="ph-caret-down-bold"></i>
-									</button>
-								</div>
-							</div>
-						
-							<!-- Company 7 -->
-							<div class="list-item" id="company7">
-								<div class="list-item-company">
-									<figure class="list-item-company-logo">
-										<img src="static/companies/{{ company7_logo }}" />
-									</figure>
-									<div class="list-item-company-info">
-										<h4 class="list-item-company-name text-white">{{ company7_name }}</h4>
-										<a href="#" class="list-item-company-hashtag">{{ company7_desc }}</a>
-									</div>
-								</div>
-								<div class="list-item-transaction">
-									<div class="list-item-transaction-values">
-										{% if company7_market > 0 %}
-										<span class="list-item-transaction-value text-green">
-											<i class="ph-arrow-up"></i>{{ company7_market }}
-										{% else %}
-										<span class="list-item-transaction-value text-red">
-											<i class="ph-arrow-down"></i>{{ company7_market }}
-										{% endif %}
-										</span>
-										<time class="list-item-transaction-time" datetime="17:00">{{ today_date }}</time>
-									</div>
-									<button class="list-item-transaction-action" hx-get="prediction/?company_name={{ company7_name }}" hx-target="#company7" hx-swap="afterend">
-										<i class="ph-caret-down-bold"></i>
-									</button>
-								</div>
-							</div>
-						
-							<!-- Company 8 -->
-							<div class="list-item" id="company8">
-								<div class="list-item-company">
-									<figure class="list-item-company-logo">
-										<img src="static/companies/{{ company8_logo }}" />
-									</figure>
-									<div class="list-item-company-info">
-										<h4 class="list-item-company-name text-white">{{ company8_name }}</h4>
-										<a href="#" class="list-item-company-hashtag">{{ company8_desc }}</a>
-									</div>
-								</div>
-								<div class="list-item-transaction">
-									<div class="list-item-transaction-values">
-										{% if company8_market > 0 %}
-										<span class="list-item-transaction-value text-green">
-											<i class="ph-arrow-up"></i>{{ company8_market }}
-										{% else %}
-										<span class="list-item-transaction-value text-red">
-											<i class="ph-arrow-down"></i>{{ company8_market }}
-										{% endif %}
-										</span>
-										<time class="list-item-transaction-time" datetime="17:00">{{ today_date }}</time>
-									</div>
-									<button class="list-item-transaction-action" hx-get="prediction/?company_name={{ company8_name }}" hx-target="#company8" hx-swap="afterend">
-										<i class="ph-caret-down-bold"></i>
-									</button>
-								</div>
-							</div>
-							<div class="loader">
-								<img  id="spinner8" class="htmx-indicator" src="{% static 'assets/loading3.gif' %}" height="50px">
-							</div>
-						
-							<!-- Company 9 -->
-							<div class="list-item" id="company9">
-								<div class="list-item-company">
-									<figure class="list-item-company-logo">
-										<img src="static/companies/{{ company9_logo }}" />
-									</figure>
-									<div class="list-item-company-info">
-										<h4 class="list-item-company-name text-white">{{ company9_name }}</h4>
-										<a href="#" class="list-item-company-hashtag">{{ company9_desc }}</a>
-									</div>
-								</div>
-								<div class="list-item-transaction">
-									<div class="list-item-transaction-values">
-										{% if company9_market > 0 %}
-										<span class="list-item-transaction-value text-green">
-											<i class="ph-arrow-up"></i>{{ company9_market }}
-										{% else %}
-										<span class="list-item-transaction-value text-red">
-											<i class="ph-arrow-down"></i>{{ company9_market }}
-										{% endif %}
-										</span>
-										<time class="list-item-transaction-time" datetime="17:00">{{ today_date }}</time>
-									</div>
-									<button class="list-item-transaction-action" hx-get="prediction/?company_name={{ company9_name }}" hx-target="#company9" hx-swap="afterend">
-										<i class="ph-caret-down-bold"></i>
-									</button>
-								</div>
-							</div>
-							<div class="loader">
-								<img  id="spinner9" class="htmx-indicator" src="{% static 'assets/loading3.gif' %}" height="50px">
-							</div>
-						
-							<!-- Company 10 -->
-							<div class="list-item" id="company10">
-								<div class="list-item-company">
-									<figure class="list-item-company-logo">
-										<img src="static/companies/{{ company10_logo }}" />
-									</figure>
-									<div class="list-item-company-info">
-										<h4 class="list-item-company-name text-white">{{ company10_name }}</h4>
-										<a href="#" class="list-item-company-hashtag">{{ company10_desc }}</a>
-									</div>
-								</div>
-								<div class="list-item-transaction">
-									<div class="list-item-transaction-values">
-										{% if company10_market > 0 %}
-										<span class="list-item-transaction-value text-green">
-											<i class="ph-arrow-up"></i>{{ company10_market }}
-										{% else %}
-										<span class="list-item-transaction-value text-red">
-											<i class="ph-arrow-down"></i>{{ company10_market }}
-										{% endif %}
-										</span>
-										<time class="list-item-transaction-time" datetime="17:00">{{ today_date }}</time>
-									</div>
-									<button class="list-item-transaction-action" hx-get="prediction/?company_name={{ company10_name }}" hx-target="#company10" hx-swap="afterend">
-										<i class="ph-caret-down-bold"></i>
-									</button>
-								</div>
-							</div>
-							<div class="loader">
-								<img  id="spinner10" class="htmx-indicator" src="{% static 'assets/loading3.gif' %}" height="50px">
-							</div>
-						</div>						
-					</div>
-					<footer class="overview-footer">
-						<a href="#" class="link">View all transactions<i class="ph-arrow-right-bold"></i></a>
-					</footer>
-				</section>
-			</div>
-		</div>
-	</main>
-</div>
-{% endblock %}
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Modernize Free</title>
+  <link rel="shortcut icon" type="image/png" href="{% static '/images/logos/favicon.png' %}" />
+  <link rel="stylesheet" href="{% static '/css/styles.min.css' %}" />
+  <link rel="stylesheet" href="{% static '/css/style.css' %}" />
+</head>
+
+<body>
+  <!--  Body Wrapper -->
+  <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+    data-sidebar-position="fixed" data-header-position="fixed">
+    <!-- Sidebar Start -->
+    <aside class="left-sidebar">
+      <!-- Sidebar scroll-->
+      <div>
+        <div class="brand-logo d-flex align-items-center justify-content-between">
+          <a href="./index.html" class="text-nowrap logo-img">
+            <img src="{% static '/images/logos/dark-logo.svg' %}" width="180" alt="Logo" />
+          </a>
+          <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
+            <i class="ti ti-x fs-8"></i>
+          </div>
+        </div>
+        <!-- Sidebar navigation-->
+        <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
+          <ul id="sidebarnav">
+            <li class="nav-small-cap">
+              <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+              <span class="hide-menu">Main</span>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link active" href="{% url 'index' %}" aria-expanded="false">
+                <span>
+                  <i class="ti ti-layout-dashboard"></i>
+                </span>
+                <span class="hide-menu">Dashboard</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="{% url 'prediction' %}" aria-expanded="false">
+                <span>
+                  <i class="ti ti-chart-line"></i>
+                </span>
+                <span class="hide-menu">Predictions</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./market-trends.html" aria-expanded="false">
+                <span>
+                  <i class="ti ti-trending-up"></i>
+                </span>
+                <span class="hide-menu">Market Trends</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./portfolio.html" aria-expanded="false">
+                <span>
+                  <i class="ti ti-briefcase"></i>
+                </span>
+                <span class="hide-menu">Portfolio</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./watchlist.html" aria-expanded="false">
+                <span>
+                  <i class="ti ti-eye"></i>
+                </span>
+                <span class="hide-menu">Watchlist</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./news.html" aria-expanded="false">
+                <span>
+                  <i class="ti ti-news"></i>
+                </span>
+                <span class="hide-menu">News</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./analytics.html" aria-expanded="false">
+                <span>
+                  <i class="ti ti-report-money"></i>
+                </span>
+                <span class="hide-menu">Analytics</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./reports.html" aria-expanded="false">
+                <span>
+                  <i class="ti ti-files"></i>
+                </span>
+                <span class="hide-menu">Reports</span>
+              </a>
+            </li>
+            <li class="nav-small-cap">
+              <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+              <span class="hide-menu">Settings</span>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./settings.html" aria-expanded="false">
+                <span>
+                  <i class="ti ti-settings"></i>
+                </span>
+                <span class="hide-menu">App Settings</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+        <!-- End Sidebar navigation -->
+      </div>
+
+      <!-- End Sidebar scroll-->
+    </aside>
+    <!--  Sidebar End -->
+    <!--  Main wrapper -->
+    <div class="body-wrapper">
+      <!--  Header Start -->
+      <header class="app-header">
+        <nav class="navbar navbar-expand-lg navbar-light">
+          <ul class="navbar-nav">
+            <li class="nav-item d-block d-xl-none">
+              <a class="nav-link sidebartoggler nav-icon-hover" id="headerCollapse" href="javascript:void(0)">
+                <i class="ti ti-menu-2"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link nav-icon-hover" href="javascript:void(0)">
+                <i class="ti ti-bell-ringing"></i>
+                <div class="notification bg-primary rounded-circle"></div>
+              </a>
+            </li>
+          </ul>
+          <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
+            <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
+              <a href="https://adminmart.com/product/modernize-free-bootstrap-admin-dashboard/" target="_blank" class="btn btn-primary">Docs</a>
+              <li class="nav-item dropdown">
+                <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown"
+                  aria-expanded="false">
+                  <img src="{% static '/images/profile/user-1.jpg' %}" alt="" width="35" height="35" class="rounded-circle">
+                </a>
+                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
+                  <div class="message-body">
+                    <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
+                      <i class="ti ti-user fs-6"></i>
+                      <p class="mb-0 fs-3">My Profile</p>
+                    </a>
+                    <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
+                      <i class="ti ti-mail fs-6"></i>
+                      <p class="mb-0 fs-3">My Account</p>
+                    </a>
+                    <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
+                      <i class="ti ti-list-check fs-6"></i>
+                      <p class="mb-0 fs-3">My Task</p>
+                    </a>
+                    <a href="./authentication-login.html" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </header>
+      <!--  Header End -->
+      <div class="container-fluid">
+        
+        <div class="row">
+          <div class="scroll-container">
+            <div class="scrolling-row">
+              <!-- First copy -->
+              <div class="scroll-content d-flex align-items-stretch">
+                {% for company in companies %}
+                <div class="stock-card col-lg-3 mb-4 d-flex align-items-stretch">
+                  <a href="/prediction/{{ company.symbol }}/">
+                    <div class="card h-100">
+                      <div class="card-body">
+                        <div class="row align-items-start">
+                          <div class="col-8">
+                            <h5 class="card-title mb-9 fw-semibold">{{ company.symbol }}</h5>
+                            <h4 class="fw-semibold mb-3">₹{{ company.price }}</h4>
+                            <div class="d-flex align-items-center pb-1">
+                              {% if company.change >= 0 %}
+                              <span class="me-2 rounded-circle bg-light-success round-20 d-flex align-items-center justify-content-center">
+                                <i class="ti ti-arrow-up-right text-success"></i>
+                              </span>
+                              <p class="text-dark me-1 fs-3 mb-0">+{{ company.change }}%</p>
+                              {% else %}
+                              <span class="me-2 rounded-circle bg-light-danger round-20 d-flex align-items-center justify-content-center">
+                                <i class="ti ti-arrow-down-right text-danger"></i>
+                              </span>
+                              <p class="text-dark me-1 fs-3 mb-0">{{ company.change }}%</p>
+                              {% endif %}
+                              <p class="fs-3 mb-0">last update</p>
+                            </div>
+                          </div>
+                          <div class="col-4">
+                            <div class="d-flex justify-content-end">
+                              <div class="text-white bg-secondary rounded-circle p-6 d-flex align-items-center justify-content-center">
+                                <i class="ti ti-currency-dollar fs-4"></i>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- <div id="earning"></div> -->
+                    </div>
+                   </a>
+                </div>
+                {% endfor %}
+              </div>
+              <!-- Duplicate copy for seamless loop -->
+              <div class="scroll-content d-flex align-items-stretch">
+                {% for company in companies %}
+                <div class="stock-card col-lg-3 mb-4 d-flex align-items-stretch">
+                  <a href="/prediction/{{ company.symbol }}/">
+                    <div class="card h-100">
+                      <div class="card-body">
+                        <div class="row align-items-start">
+                          <div class="col-8">
+                            <h5 class="card-title mb-9 fw-semibold">{{ company.symbol }}</h5>
+                            <h4 class="fw-semibold mb-3">₹{{ company.price }}</h4>
+                            <div class="d-flex align-items-center pb-1">
+                              {% if company.change >= 0 %}
+                              <span class="me-2 rounded-circle bg-light-success round-20 d-flex align-items-center justify-content-center">
+                                <i class="ti ti-arrow-up-right text-success"></i>
+                              </span>
+                              <p class="text-dark me-1 fs-3 mb-0">+{{ company.change }}%</p>
+                              {% else %}
+                              <span class="me-2 rounded-circle bg-light-danger round-20 d-flex align-items-center justify-content-center">
+                                <i class="ti ti-arrow-down-right text-danger"></i>
+                              </span>
+                              <p class="text-dark me-1 fs-3 mb-0">{{ company.change }}%</p>
+                              {% endif %}
+                              <p class="fs-3 mb-0">last update</p>
+                            </div>
+                          </div>
+                          <div class="col-4">
+                            <div class="d-flex justify-content-end">
+                              <div class="text-white bg-secondary rounded-circle p-6 d-flex align-items-center justify-content-center">
+                                <i class="ti ti-currency-dollar fs-6"></i>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- <div id="earning"></div> -->
+                    </div>
+                  </a>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+                
+        <!--  Row 1 -->
+        <div class="row">
+          <div class="col-lg-4 d-flex flex-column gap-0">
+            <!-- Search Card -->
+            <div class="card w-100">
+              <div class="card-body p-4">
+                <div class="mb-4">
+                  <h5 class="card-title fw-semibold">Search Stocks</h5>
+                </div>
+                <div class="mb-3">
+                  <label for="globalSearch" class="form-label">Search by Symbol or Name</label>
+                  <input type="text" class="form-control" id="globalSearch" placeholder="e.g., TCS, Infosys">
+                </div>
+                <button class="btn btn-primary w-100">Search</button>
+              </div>
+            </div>
+          
+            <!-- Filters Card -->
+            <div class="card w-100">
+              <div class="card-body p-4">
+                <div class="mb-4">
+                  <h5 class="card-title fw-semibold">Filters</h5>
+                </div>
+                <!-- Filter: Sentiment -->
+                <div class="mb-3">
+                  <label for="sentimentFilter" class="form-label">Sentiment</label>
+                  <select class="form-select" id="sentimentFilter">
+                    <option selected>All</option>
+                    <option value="bullish">Bullish</option>
+                    <option value="bearish">Bearish</option>
+                  </select>
+                </div>
+                <!-- Filter: Company Search -->
+                <div class="mb-3">
+                  <label for="companySearch" class="form-label">Company</label>
+                  <input type="text" class="form-control" id="companySearch" placeholder="Search Company">
+                </div>
+                <!-- Filter: Price Range -->
+                <div class="mb-3">
+                  <label for="priceRange" class="form-label">Price Range</label>
+                  <input type="range" class="form-range" id="priceRange" min="0" max="5000" step="50">
+                  <div class="d-flex justify-content-between">
+                    <small>₹0</small>
+                    <small>₹5000+</small>
+                  </div>
+                </div>
+                <button class="btn btn-primary w-100">Apply Filters</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-8 d-flex align-items-stretch">
+            <div class="card w-100">
+              <div class="card-body p-4">
+                <h5 class="card-title fw-semibold mb-4">Market Snapshot</h5>
+                <div class="table-responsive">
+                  <table class="table text-nowrap mb-0 align-middle">
+                    <thead class="text-dark fs-4">
+                      <tr>
+                        <th class="border-bottom-0">
+                          <h6 class="fw-semibold mb-0">Company</h6>
+                        </th>
+                        <th class="border-bottom-0">
+                          <h6 class="fw-semibold mb-0">Symbol</h6>
+                        </th>
+                        <th class="border-bottom-0">
+                          <h6 class="fw-semibold mb-0">Sentiment</h6>
+                        </th>
+                        <th class="border-bottom-0">
+                          <h6 class="fw-semibold mb-0">Price</h6>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for stock in stocks %}
+                      <tr>
+                        <td class="border-bottom-0">
+                          <a href="/prediction/{{ stock.symbol }}/" class="text-decoration-none">
+                            <h6 class="fw-semibold mb-0">{{ stock.company }}</h6>
+                          </a>
+                        </td>
+                        <td class="border-bottom-0">
+                          <h6 class="fw-semibold mb-0">{{ stock.symbol }}</h6>
+                        </td>
+                        <td class="border-bottom-0">
+                          <div class="d-flex align-items-center gap-2">
+                            {% if stock.sentiment == "Bullish" %}
+                            <span class="badge bg-success rounded-3 fw-semibold">{{ stock.sentiment }}</span>
+                            {% else %}
+                            <span class="badge bg-danger rounded-3 fw-semibold">{{ stock.sentiment }}</span>
+                            {% endif %}
+                          </div>
+                        </td>
+                        <td class="border-bottom-0">
+                          <h6 class="fw-semibold mb-0 fs-4">₹{{ stock.price }}</h6>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="py-6 px-6 text-center">
+          <p class="mb-0 fs-4">Developed by the Students from<a href="https://adminmart.com/" target="_blank" class="pe-1 text-primary text-decoration-underline"> the School of Computing Sciences</a> - The Assam Kaziranga University</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="{% static '/libs/jquery/dist/jquery.min.js' %}"></script>
+  <script src="{% static '/libs/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static '/js/sidebarmenu.js' %}"></script>
+  <script src="{% static '/js/app.min.js' %}"></script>
+  <script src="{% static '/libs/apexcharts/dist/apexcharts.min.js' %}"></script>
+  <script src="{% static '/libs/simplebar/dist/simplebar.js' %}"></script>
+  <script src="{% static '/js/dashboard.js' %}"></script>
+</body>
+
+</html>
