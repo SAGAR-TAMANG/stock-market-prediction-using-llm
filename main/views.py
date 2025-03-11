@@ -38,6 +38,19 @@ def get_stock_data(nse, symbol):
     }
 
 def index(request):
+    if request.method == "POST":
+        symbol = request.POST.get("symbol", "").strip()
+        if symbol:
+            categories, insights = generate_prediction(symbol)
+            
+            context = {
+                'chart_categories': categories,
+                'insights': insights,
+            }
+            return render(request, 'prediction.html', context)
+        else:
+            pass
+        
     DIR = "C:/Users/TAMANG/Documents/GitHub/stock-market-prediction-using-llm/stock-api"
     nse = NSE(download_folder=DIR)
     
@@ -99,92 +112,98 @@ def index(request):
     
     return render(request, 'index.html', context)
 
-def prediction(request, symbol=None):
-    if request.method == "POST":
-        symbol = request.POST.get("symbol")
+def generate_prediction(symbol):
+    """Function to generate prediction insights for a given stock symbol."""
+    
+    # Create dynamic date categories: starting from today for the next 8 days in dd/mm format.
+    today = datetime.today()
+    categories = [(today + timedelta(days=i)).strftime("%d/%m") for i in range(8)]
+    
+    # Build the prompt for generating prediction insights
+    prompt = (
+        f"Generate a JSON response with prediction insights for the company with symbol '{symbol}'. "
+        "The JSON should include the following keys:\n"
+        "- company_name: The full name or a friendly name for the company.\n"
+        "- company_symbol: The company ticker symbol.\n"
+        "- title: A title for the prediction insights.\n"
+        "- paragraph: A summary paragraph explaining the predictions. Use numbers as possible.\n"
+        "- bullets: A list of 5-7 bullet points explaining the key prediction factors.\n"
+        "- chart_data: A list of 8 integer values representing prediction metrics for the next 8 days.\n"
+        "- min_value: Minimum value of the chart_data\n"
+        "- max_value: Maximum value of the chart_data\n"
+        "Return only the JSON response."
+    )
+    
+    try:
+        sutra_url = 'https://api.two.ai/v2'
+        client = OpenAI(base_url=sutra_url, api_key=os.getenv("SUTRA_API_KEY"))
         
-    if symbol:
-        # Create dynamic date categories: starting from today for the next 8 days in dd/mm format.
-        today = datetime.today()
-        categories = [(today + timedelta(days=i)).strftime("%d/%m") for i in range(8)]
-        
-        # Build the prompt for generating prediction insights
-        prompt = (
-            f"Generate a JSON response with prediction insights for the company with symbol '{symbol}'. "
-            "The JSON should include the following keys:\n"
-            "- company_name: The full name or a friendly name for the company.\n"
-            "- company_symbol: The company ticker symbol.\n"
-            "- title: A title for the prediction insights.\n"
-            "- paragraph: A summary paragraph explaining the predictions. Use numbers as possible.\n"
-            "- bullets: A list of 5-7 bullet points explaining the key prediction factors.\n"
-            "- chart_data: A list of 8 integer values representing prediction metrics for the next 8 days.\n"
-            "- min_value: Minimim value of the chart_data\n"
-            "- max_value: Maximum value of the chart_data\n"
-            "Return only the JSON response."
+        # Call the API using streaming mode.
+        stream = client.chat.completions.create(
+            model='sutra-light',
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant that generates prediction insights."},
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=2000,
+            temperature=0.7,
+            stream=True
         )
         
-        try:
-            sutra_url = 'https://api.two.ai/v2'
-            client = OpenAI(base_url=sutra_url, api_key=os.getenv("SUTRA_API_KEY"))
-            
-            # Call the API using streaming mode.
-            stream = client.chat.completions.create(
-                model='sutra-light',
-                messages=[
-                    {"role": "system", "content": "You are a helpful assistant that generates prediction insights."},
-                    {"role": "user", "content": prompt}
-                ],
-                max_tokens=2000,
-                temperature=0.7,
-                stream=True
-            )
-            
-            chunks = []
-            for chunk in stream:
-                message_chunk = chunk.choices[0].delta.content
-                if message_chunk:
-                    chunks.append(message_chunk)
-                    
-            content = ''.join(chunks)
-            print(f"GENERATED: {content}")
-            
-            # Try to parse the generated response directly as JSON.
-            try:
-                insights = json.loads(content)
-            except json.JSONDecodeError:
-                # Second attempt: try to extract JSON object from the response using regex.
-                json_match = re.search(r'\{.*\}', content, re.DOTALL)
-                if json_match:
-                    insights = json.loads(json_match.group(0))
-                else:
-                    # If JSON extraction fails, use a default fallback.
-                    insights = {
-                        'company_name': symbol,
-                        'company_symbol': symbol,
-                        'title': 'Prediction Insights',
-                        'paragraph': "We are currently unable to generate predictions. Please try again later.",
-                        'bullets': [],
-                        'chart_data': [0] * 8
-                    }
-                    
-        except Exception as e:
-            print(f"Error during prediction generation: {e}")
-            # Fallback in case of an error with the API call or JSON parsing.
-            insights = {
-                'company_name': symbol,
-                'company_symbol': symbol,
-                'title': 'Prediction Insights',
-                'paragraph': "We are currently unable to generate predictions. Please try again later.",
-                'bullets': [],
-                'chart_data': [0] * 8
-            }
+        chunks = []
+        for chunk in stream:
+            message_chunk = chunk.choices[0].delta.content
+            if message_chunk:
+                chunks.append(message_chunk)
+                
+        content = ''.join(chunks)
+        print(f"GENERATED: {content}")
         
-        # insights['chart_data'] = [355, 390, 300, 350, 390, 180, 355, 390]
+        # Try to parse the generated response directly as JSON.
+        try:
+            insights = json.loads(content)
+        except json.JSONDecodeError:
+            # Second attempt: try to extract JSON object from the response using regex.
+            json_match = re.search(r'\{.*\}', content, re.DOTALL)
+            if json_match:
+                insights = json.loads(json_match.group(0))
+            else:
+                # If JSON extraction fails, use a default fallback.
+                insights = {
+                    'company_name': symbol,
+                    'company_symbol': symbol,
+                    'title': 'Prediction Insights',
+                    'paragraph': "We are currently unable to generate predictions. Please try again later.",
+                    'bullets': [],
+                    'chart_data': [0] * 8
+                }
+                
+    except Exception as e:
+        print(f"Error during prediction generation: {e}")
+        # Fallback in case of an error with the API call or JSON parsing.
+        insights = {
+            'company_name': symbol,
+            'company_symbol': symbol,
+            'title': 'Prediction Insights',
+            'paragraph': "We are currently unable to generate predictions. Please try again later.",
+            'bullets': [],
+            'chart_data': [0] * 8
+        }
+    
+    return categories, insights
 
+def prediction(request, symbol=None):
+    """View to render stock prediction page."""
+    if request.method == "POST":
+        symbol = request.POST.get("symbol")
+    
+    if symbol:
+        categories, insights = generate_prediction(symbol)
+        
         context = {
             'chart_categories': categories,
             'insights': insights,
         }
         return render(request, 'prediction.html', context)
-    else:
-        return render(request, 'prediction-none.html')
+    
+    return render(request, 'prediction-none.html')

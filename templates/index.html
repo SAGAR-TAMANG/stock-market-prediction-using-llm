@@ -270,18 +270,22 @@
         <div class="row">
           <div class="col-lg-4 d-flex flex-column gap-0">
             <!-- Search Card -->
-            <div class="card w-100">
-              <div class="card-body p-4">
-                <div class="mb-4">
-                  <h5 class="card-title fw-semibold">Search Stocks</h5>
+            <form method="POST" action="{% url 'index' %}">
+              {% csrf_token %}
+              <!-- Search Card -->
+              <div class="card w-100">
+                <div class="card-body p-4">
+                  <div class="mb-4">
+                    <h5 class="card-title fw-semibold">Search Stocks</h5>
+                  </div>
+                  <div class="mb-3">
+                    <label for="globalSearch" class="form-label">Search by Symbol</label>
+                    <input type="text" class="form-control" id="globalSearch" name="symbol" placeholder="e.g., TCS, INFY" required>
+                  </div>
+                  <button type="submit" class="btn btn-primary w-100">Search</button>
                 </div>
-                <div class="mb-3">
-                  <label for="globalSearch" class="form-label">Search by Symbol or Name</label>
-                  <input type="text" class="form-control" id="globalSearch" placeholder="e.g., TCS, Infosys">
-                </div>
-                <button class="btn btn-primary w-100">Search</button>
               </div>
-            </div>
+            </form>
           
             <!-- Filters Card -->
             <div class="card w-100">
