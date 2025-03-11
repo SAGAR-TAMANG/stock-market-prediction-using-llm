@@ -1,7 +1,10 @@
-import random
 from django.shortcuts import render
 from datetime import datetime, timedelta
 from nse import NSE
+from openai import OpenAI
+import random, json, os, re
+from dotenv import load_dotenv
+load_dotenv()
 
 def get_stock_data(nse, symbol):
     """
@@ -99,40 +102,86 @@ def index(request):
 def prediction(request, symbol=None):
     if request.method == "POST":
         symbol = request.POST.get("symbol")
-    # If a symbol is provided in the URL, use it; otherwise, default to Infosys (as an example)
+        
     if symbol:
-        company = {
-            'name': symbol,  # In a real application, you'd look up the full company name for this symbol
-            'symbol': symbol
-        }
         # Create dynamic date categories: starting from today for the next 8 days in dd/mm format.
         today = datetime.today()
         categories = [(today + timedelta(days=i)).strftime("%d/%m") for i in range(8)]
         
-        # Hardcoded prediction chart data (for demonstration)
-        chart_data = [355, 390, 300, 350, 390, 180, 355, 390]
+        # Build the prompt for generating prediction insights
+        prompt = (
+            f"Generate a JSON response with prediction insights for the company with symbol '{symbol}'. "
+            "The JSON should include the following keys:\n"
+            "- company_name: The full name or a friendly name for the company.\n"
+            "- company_symbol: The company ticker symbol.\n"
+            "- title: A title for the prediction insights.\n"
+            "- paragraph: A summary paragraph explaining the predictions. Use numbers as possible.\n"
+            "- bullets: A list of 5-7 bullet points explaining the key prediction factors.\n"
+            "- chart_data: A list of 8 integer values representing prediction metrics for the next 8 days.\n"
+            "- min_value: Minimim value of the chart_data\n"
+            "- max_value: Maximum value of the chart_data\n"
+            "Return only the JSON response."
+        )
         
-        # Prediction insights
-        insights = {
-            'title': 'Prediction Insights',
-            'paragraph': (
-                "Our AI model has analyzed current market trends, recent news, and historical data "
-                "to forecast this prediction. The following factors were taken into account:"
-            ),
-            'bullets': [
-                "Positive earnings report expected.",
-                "Strong market sentiment observed.",
-                "Recent strategic partnership announcement.",
-                "Robust growth in the tech sector.",
-                "Global markets rally amid investor optimism.",
-                "New regulations impacting sector performance.",
-                "Analysts upgrading forecasts for tech stocks."
-            ]
-        }
+        try:
+            sutra_url = 'https://api.two.ai/v2'
+            client = OpenAI(base_url=sutra_url, api_key=os.getenv("SUTRA_API_KEY"))
+            
+            # Call the API using streaming mode.
+            stream = client.chat.completions.create(
+                model='sutra-light',
+                messages=[
+                    {"role": "system", "content": "You are a helpful assistant that generates prediction insights."},
+                    {"role": "user", "content": prompt}
+                ],
+                max_tokens=2000,
+                temperature=0.7,
+                stream=True
+            )
+            
+            chunks = []
+            for chunk in stream:
+                message_chunk = chunk.choices[0].delta.content
+                if message_chunk:
+                    chunks.append(message_chunk)
+                    
+            content = ''.join(chunks)
+            print(f"GENERATED: {content}")
+            
+            # Try to parse the generated response directly as JSON.
+            try:
+                insights = json.loads(content)
+            except json.JSONDecodeError:
+                # Second attempt: try to extract JSON object from the response using regex.
+                json_match = re.search(r'\{.*\}', content, re.DOTALL)
+                if json_match:
+                    insights = json.loads(json_match.group(0))
+                else:
+                    # If JSON extraction fails, use a default fallback.
+                    insights = {
+                        'company_name': symbol,
+                        'company_symbol': symbol,
+                        'title': 'Prediction Insights',
+                        'paragraph': "We are currently unable to generate predictions. Please try again later.",
+                        'bullets': [],
+                        'chart_data': [0] * 8
+                    }
+                    
+        except Exception as e:
+            print(f"Error during prediction generation: {e}")
+            # Fallback in case of an error with the API call or JSON parsing.
+            insights = {
+                'company_name': symbol,
+                'company_symbol': symbol,
+                'title': 'Prediction Insights',
+                'paragraph': "We are currently unable to generate predictions. Please try again later.",
+                'bullets': [],
+                'chart_data': [0] * 8
+            }
         
+        # insights['chart_data'] = [355, 390, 300, 350, 390, 180, 355, 390]
+
         context = {
-            'company': company,
-            'chart_data': chart_data,
             'chart_categories': categories,
             'insights': insights,
         }
